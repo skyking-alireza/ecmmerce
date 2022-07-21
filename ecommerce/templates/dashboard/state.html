@@ -1,0 +1,110 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block customstyle %}
+    <link href="{% static 'assets/css/vendor/dataTables.bootstrap5.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/css/vendor/responsive.bootstrap5.css' %}" rel="stylesheet" type="text/css" />
+    <style>
+        input[data-switch]:checked+label:after{
+            right: 78px;
+        }
+        .form-control{
+            width: 50%;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 style="font-size: 20px" class="header-title">{{ title }}</h1>
+                    <br>
+                    <br>
+                    <form method="post" id="form-state">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">استان</label>
+                            {{ form.title }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">ثبت اطلاعات</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+{% block formerrors %}
+    {% if  form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div style="text-align: right" class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>خطا </strong> {{ error }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+{% block tables %}
+                {% if datas %}
+                        <table id="basic-datatable" class="table nowrap row-border order-column w-100">
+                            <thead>
+                                <tr>
+                                    <th>عنوان</th>
+                                    <th>ویرایش</th>
+                                    <th>حذف</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in datas %}
+                                <tr>
+                                    <td>{{ data }}</td>
+                                    <td><a style="font-size: 20px" data="{{ data.id }}" class="set-update"><i class="mdi mdi-file-edit"></i></a></td>
+                                    <td><a style="font-size: 20px" href="{{ data.deleteitem }}"><i class="mdi mdi-delete"></i></a>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                    <br>
+                    <br>
+                    <br>
+                    <div class="row" style="text-align: center">
+                        <div class="alert alert-warning bg-white text-warning" role="alert">
+                            <strong>موردی یافت نشد !</strong>
+                        </div>
+                    </div>
+                {% endif %}
+{% endblock %}
+{% block customjs %}
+    <script src="{% static 'axios.min.js' %}"></script>
+    <script>
+    $('.set-update').click(function () {
+        axios({
+            method : "GET",
+            url : '{% url "update_state"  %}?data=' + $(this).attr('data'),
+        }).then((response) => {
+            $('#id_title').val((response.data.text).title);
+            $('<input>').attr({
+                type: 'hidden',
+                value: (response.data.text).id,
+                name: 'state-id',
+            }).appendTo('#form-state');
+        });
+    });
+    </script>
+    <!-- Datatables js -->
+    <script src="{% static 'assets/js/vendor/jquery.dataTables.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.bootstrap5.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.responsive.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/responsive.bootstrap5.min.js'%}"></script>
+
+    <!-- Datatable Init js -->
+    <script src="{% static 'assets/js/pages/demo.datatable-init.js'%}"></script>
+{% endblock %}

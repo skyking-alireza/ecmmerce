@@ -1,0 +1,606 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load jalali_tags %}
+{% load static %}
+{% block customstyle %}
+    <style>
+        input[data-switch]:checked+label:after{
+            right: 78px;
+        }
+        .form-control{
+            width: 50%;
+        }
+        .timepicker {
+            border: none;
+            box-shadow: 0 5px 10px rgb(0 0 0 / 20%);
+            border-radius: 5px;
+            padding: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .none{
+            display: none;
+        }
+        .rounded{
+            cursor: pointer;
+        }
+        .delbtn{
+                position: absolute;
+                left: 0;
+                margin-left: 10px;
+                margin-top: -7px;
+                border: none;
+                background: none;
+        }
+        .select{
+            border: #4b62cf dashed 2px;
+            transition: .5s;
+        }
+        .inline-block{
+             display: inline-block;
+        }
+    </style>
+    <link href="{% static 'persian-datepicker.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'select2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'select2-bootstrap4.min.css' %}" rel="stylesheet">
+    <script src="{% static 'jquery-3.6.0.min.js'%}"></script>
+    <script src="{% static 'persian-date.min.js'%}"></script>
+    <script src="{% static 'persian-datepicker.min.js'%}"></script>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 style="font-size: 20px" class="header-title">
+                        {% if  pro %}
+                            {{ pro.name }}
+                        {% endif %}
+                    </h1>
+                    <br>
+                    <br>
+                    {% if datas %}
+                        {% for data in datas %}
+                            <div class="accordion custom-accordion" id="custom-accordion-one">
+                                <div class="card mb-0">
+                                    <div class="card-header" id="headingFour">
+                                        <h5 class="m-0">
+                                            <a class="custom-accordion-title d-block py-1"
+                                                data-bs-toggle="collapse" href="#product{{ data.id }}"
+                                                aria-expanded="true" aria-controls="collapseFour">
+                                                قیمت  {{ data.price }} تومان /
+                                                {% if data.color %}
+                                                رنگ {{ data.color }}/
+                                                {% endif %}
+                                                {% if data.details %}
+                                                    {{ data.details }} /
+                                                {% endif %}
+                                                <button type="button"  class="btn delbtn btn-danger" data-bs-toggle="modal" data-bs-target="#del{{ data.id }}"><i style="color: #6c757d;font-size: 18px" class="mdi mdi-delete"></i></button>
+                                                <i class="mdi mdi-chevron-down accordion-arrow"></i>
+                                            </a>
+                                        </h5>
+                                    </div>
+
+                                    <div id="product{{ data.id }}" class="collapse"
+                                        aria-labelledby="headingFour"
+                                        data-bs-parent="#custom-accordion-one">
+                                        <div class="card-body">
+                                            <form method="post" enctype="multipart/form-data" action="{% url 'update_price' %}">
+                                                {% csrf_token %}
+                                                <div class="mb-3">
+                                                    <input type="hidden" name="product" value="{{ data.product.id }}">
+                                                    <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                                                    <input type="hidden" name="id" value="{{ data.id }}">
+                                                    <input type="hidden" name="color" value="{{ data.color.id }}">
+                                                    <input type="hidden" name="details" value="{{ data.details.id }}">
+                                                    <label class="form-label">قیمت</label>
+                                                    <input type="number" value="{{ data.price }}" name="price" class="form-control">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">حداقل تعداد خرید</label>
+                                                    <input type="number" min="0" value="{{ data.min }}" name="min" id="{{ data.id }}" class="form-control min min{{ data.id }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">حداکثر تعداد خرید</label>
+                                                    <input type="number" value="{{ data.max }}" name="max" id="{{ data.id }}" class="form-control max max{{ data.id }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">موجودی</label>
+                                                    <input type="number" value="{{ data.count }}" name="count" id="{{ data.id }}" class="form-control count count{{ data.id }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <p style="font-weight: 600;">نمایش قیمت همکار</p>
+                                                    <input name="colleague" name="colleague" type="checkbox" id="switch{{ data.id }}"
+                                                           {% if data.colleague == True %}
+                                                            checked
+                                                           {% endif %}
+                                                           data-switch="info"/>
+                                                    <label style="width: 100px;"  data="{{ data.id }}" class="colleague" for="switch{{ data.id }}" data-on-label="نمایش" data-off-label="عدم نمایش"></label>
+                                                </div>
+                                                 <div class="mb-3">
+                                                    <label class="form-label">قیمت همکار</label>
+                                                    <input type="number" value="{{ data.price_colleague }}" name="price_colleague" class="form-control colleague{{ data.id }}" {% if data.colleague == False %}
+                                                            disabled
+                                                           {% endif %}>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">حداقل تعداد خرید همکار</label>
+                                                    <input type="number" min="0" value="{{ data.min_colleague }}" name="min_colleague" id="{{ data.id }}" class="form-control colleague{{ data.id }}" {% if data.colleague == False %}
+                                                            disabled
+                                                           {% endif %}>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">حداکثر تعداد خرید همکار</label>
+                                                    <input type="number" value="{{ data.max_colleague }}" name="max_colleague" id="{{ data.id }}" class="form-control colleague{{ data.id }}" {% if data.colleague == False %}
+                                                            disabled
+                                                           {% endif %}>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">موجودی همکار</label>
+                                                    <input type="number" value="{{ data.count_colleague }}" name="count_colleague" id="{{ data.id }}" class="form-control colleague{{ data.id }}" {% if data.colleague == False %}
+                                                            disabled
+                                                           {% endif %}>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <p style="font-weight: 600;">تخفیف</p>
+                                                    <input name="discount" type="checkbox" id="discount{{ data.id }}"
+                                                           {% if data.discount == True %}
+                                                            checked
+                                                           {% endif %}
+                                                           data-switch="info"/>
+                                                    <label style="width: 100px;"  data="{{ data.id }}" class="discount" for="discount{{ data.id }}" data-on-label="تخفیف" data-off-label="بدون تخفیف"></label>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">قیمت محصول با تخفیف</label>
+                                                    <input type="number" value="{{ data.price_discount }}" name="price_discount" class="form-control discount{{ data.id }}" {% if data.discount == False %}
+                                                            disabled
+                                                           {% endif %}>
+                                                </div>
+                                            <div class="row from{{ data.id }}" style="margin: 20px;
+                                                {% if data.discount == False %}
+                                                    display: none;
+                                                    {% else %}
+                                                    display: inline-block;
+                                                    {% endif %}
+">
+                                                <p>شروع تخفیف</p>
+                                                <div class="range-from-example{{ data.id }}"  value="{{ data.timestart|date:"%Y-%m-%d" }}" data-date="{{ data.timestart|date:"%Y-%m-%d" }}" ></div>
+                                                <input type="hidden" class="timefrom{{ data.id }}" name="timestart_0" value="{{ data.timestart|date:"%Y-%m-%d" }}" >
+                                                <input class="only-timepicker-from{{ data.id }} timepicker" name="timestart_1" value="{{ data.timestart|to_jalali:'%H:%M:%S' }}" {% if data.discount == False %}
+                                                            disabled
+                                                           {% endif %}>
+                                            </div>
+                                            <div class="row from{{ data.id }}" style="margin: 20px;
+                                                {% if data.discount == False %}
+                                                    display: none;
+                                                    {% else %}
+                                                    display: inline-block;
+                                                    {% endif %}
+">
+                                                <p>پایان تخفیف</p>
+                                                <div class="range-to-example{{ data.id }}"  value="{{ data.timeend|date:"%Y-%m-%d" }}" data-date="{{ data.timeend|date:"%Y-%m-%d" }}"></div>
+                                                <input type="hidden" class="timeto{{ data.id }}" name="timeend_0" value="{{ data.timeend|date:"%Y-%m-%d" }}">
+                                                <input class="only-timepicker-to{{ data.id }} timepicker" name="timeend_1" value="{{ data.timeend|to_jalali:'%H:%M:%S' }}"{% if data.discount == False %}
+                                                            disabled
+                                                           {% endif %}>
+                                            </div>
+                                            <br>
+                                            <button type="submit" class="btn btn-primary">بروزرسانی اطلاعات</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                            <div class="accordion custom-accordion" id="custom-accordion-one">
+                                <div class="card mb-0">
+                                    <div class="card-header" id="headingFour">
+                                        <h5 class="m-0">
+                                            <a class="custom-accordion-title d-block py-1"
+                                                data-bs-toggle="collapse" href="#product0"
+                                                aria-expanded="true" aria-controls="collapseFour">
+                                                افزودن قیمت جدید
+                                                <i class="mdi mdi-chevron-down accordion-arrow"></i>
+                                            </a>
+                                        </h5>
+                                    </div>
+                                <div id="product0" class="collapse"
+                                        aria-labelledby="headingFour"
+                                        data-bs-parent="#custom-accordion-one">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <form method="post" >
+                                                        {% csrf_token %}
+                                                            <div class="mb-3">
+                                                                    <label class="form-label">ثبت قیمت جدید</label>
+                                                                    <input name="product" type="hidden" value="{{ product_id }}">
+                                                                    <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                                                                </div>
+                                                            <div class="mb-3">
+                                                                    <label class="form-label">رنگ</label>
+                                                                    {% if colors %}
+                                                                        <input name="color" class="color none">
+                                                                        <table class="table mb-0">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                        {% for color in colors %}
+                                                                            {% if forloop.counter|divisibleby:9 %}
+                                                                                </tr>
+                                                                                <tr>
+                                                                            {% endif %}
+                                                                            <td>
+                                                                                <div class="avatar-xs col-lg-1" style="margin: 10px">
+                                                                                    <span class="avatar-title rounded" data="{{ color.id }}"  data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="{{ color.name }}" style="background-color: {{ color.color }}">
+
+                                                                                    </span>
+                                                                                </div>
+                                                                            </td>
+
+                                                                        {% endfor %}
+                                                                                    </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                        {% else %}
+                                                                        <div class="row" style="text-align: center">
+
+                                                                                <div class="alert alert-warning bg-white text-warning" role="alert">
+                                                                                    <strong>رنگ یافت نشد !</strong>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">متغیر</label>
+                                                                        {{ form.details }}
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">قیمت</label>
+                                                                        {{ form.price }}
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">حداقل تعداد خرید</label>
+                                                                        {{ form.min }}
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">حداکثر تعداد خرید</label>
+                                                                        {{ form.max }}
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">موجودی</label>
+                                                                        {{ form.count }}
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <p style="font-weight: 600;">نمایش قیمت همکار</p>
+                                                                        {{ form.colleague }}
+                                                                        <label style="width: 100px;" class="colleague" data="0" for="switch0" data-on-label="نمایش" data-off-label="عدم نمایش"></label>
+
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">قیمت همکار</label>
+                                                                        {{ form.price_colleague }}
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">حداقل خرید همکار</label>
+                                                                        {{ form.min_colleague }}
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">حداکثر خرید همکار</label>
+                                                                        {{ form.max_colleague }}
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <p style="font-weight: 600;">تخفیف</p>
+                                                                        {{ form.discount }}
+                                                                        <label style="width: 100px;" class="discount" data="0" for="discount0" data-on-label="تخفیف" data-off-label="بدون تخفیف"></label>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label">قیمت محصول بعد از تخفیف</label>
+                                                                        {{ form.price_discount }}
+                                                                    </div>
+                                                                    <div class="row from0" style="margin: 20px;display: none;">
+                                                                        <p>شروع تخفیف</p>
+                                                                        <div class="range-from-example0" ></div>
+                                                                        <input type="hidden" class="timefrom0" name="timestart_0" >
+                                                                        <input class="only-timepicker-from0 timepicker" name="timestart_1">
+                                                                    </div>
+                                                                    <div class="row from0" style="margin: 20px;display: none;">
+                                                                        <p>پایان تخفیف</p>
+                                                                        <div class="range-to-example0" ></div>
+                                                                        <input type="hidden" class="timeto0" name="timeend_0">
+                                                                        <input class="only-timepicker-to0 timepicker" name="timeend_1" >
+                                                                    </div>
+                                                                </div>
+                                                            <button type="submit" class="btn btn-primary">ثبت اطلاعات</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                         </div>
+                                    </div>
+                                </div>
+
+                <script type="text/javascript">
+                    $('.only-timepicker-from0').persianDatepicker({
+                                onlyTimePicker: true,
+                                calendar: {
+                                    persian: {
+                                      locale: "en",
+                                      showHint: false,
+                                      leapYearMode: "algorithmic"
+                                    },
+                                    gregorian: {
+                                      locale: "en",
+                                      showHint: true
+                                    }
+                                  },
+                                format : 'HH:mm:ss',
+                            });
+                            $('.only-timepicker-to0').persianDatepicker({
+                                onlyTimePicker: true,
+                                calendar: {
+                                    persian: {
+                                      locale: "en",
+                                      showHint: false,
+                                      leapYearMode: "algorithmic"
+                                    },
+                                    gregorian: {
+                                      locale: "en",
+                                      showHint: true
+                                    }
+                                  },
+                                format : 'HH:mm:ss',
+                            });
+                            $('.only-timepicker-to0').val('')
+                            $('.only-timepicker-from0').val('')
+                            var to0, from0;
+                            to0 = $(".range-to-example0").persianDatepicker({
+                                inline: true,
+                                altField: '.range-to-example-alt',
+                                altFormat: 'l',
+                                format: 'YYYY-M-D' ,
+                                initialValue: false,
+                                calendar: {
+                                    persian: {
+                                      locale: "en",
+                                      showHint: false,
+                                      leapYearMode: "algorithmic"
+                                    },
+                                    gregorian: {
+                                      locale: "en",
+                                      showHint: true
+                                    }
+                                  },
+                                onSelect: function (unix) {
+                                    to0.touched = true;
+                                    if (from0 && from0.options && from0.options.maxDate != unix) {
+                                        var cachedValue = from0.getState().selected.unixDate;
+                                        from0.options = {maxDate: unix};
+                                        if (from0.touched) {
+                                            from0.setDate(cachedValue);
+                                        }
+                                    }
+                                    $('.timeto0').val($(".range-to-example0").val());
+                                }
+                            });
+                            from0 = $(".range-from-example0").persianDatepicker({
+                                inline: true,
+                                altField: '.range-from-example-alt',
+                                altFormat: 'LLLL',
+                                format: 'YYYY-M-D' ,
+                                initialValue: false,
+                                calendar: {
+                                    persian: {
+                                      locale: "en",
+                                      showHint: false,
+                                      leapYearMode: "algorithmic"
+                                    },
+                                    gregorian: {
+                                      locale: "en",
+                                      showHint: true
+                                    }
+                                  },
+                                onSelect: function (unix) {
+                                    from0.touched = true;
+                                    if (to0 && to0.options && to0.options.minDate != unix) {
+                                        var cachedValue = to0.getState().selected.unixDate;
+                                        to0.options = {minDate: unix};
+                                        if (to0.touched) {
+                                            to0.setDate(cachedValue);
+                                        }
+                                    }
+                                    $('.timefrom0').val($(".range-from-example0").val());
+                                }
+                            });
+                    {% if datas %}
+                        {% for data in datas %}
+                            $('.only-timepicker-from{{ data.id }}').persianDatepicker({
+                                onlyTimePicker: true,
+                                calendar: {
+                                    persian: {
+                                      locale: "en",
+                                      showHint: false,
+                                      leapYearMode: "algorithmic"
+                                    },
+                                    gregorian: {
+                                      locale: "en",
+                                      showHint: true
+                                    }
+                                  },
+                                format : 'HH:mm:ss',
+                            });
+                            $('.only-timepicker-to{{ data.id }}').persianDatepicker({
+                                onlyTimePicker: true,
+                                calendar: {
+                                    persian: {
+                                      locale: "en",
+                                      showHint: false,
+                                      leapYearMode: "algorithmic"
+                                    },
+                                    gregorian: {
+                                      locale: "en",
+                                      showHint: true
+                                    }
+                                  },
+                                format : 'HH:mm:ss',
+                            });
+                            var to{{ data.id }}, from{{ data.id }};
+                            to{{ data.id }} = $(".range-to-example{{ data.id }}").persianDatepicker({
+                                inline: true,
+                                altField: '.range-to-example-alt',
+                                altFormat: 'l',
+                                format: 'YYYY-M-D' ,
+                                initialValue: false,
+                                calendar: {
+                                    persian: {
+                                      locale: "en",
+                                      showHint: false,
+                                      leapYearMode: "algorithmic"
+                                    },
+                                    gregorian: {
+                                      locale: "en",
+                                      showHint: true
+                                    }
+                                  },
+                                onSelect: function (unix) {
+                                    to{{ data.id }}.touched = true;
+                                    if (from{{ data.id }} && from{{ data.id }}.options && from{{ data.id }}.options.maxDate != unix) {
+                                        var cachedValue = from{{ data.id }}.getState().selected.unixDate;
+                                        from{{ data.id }}.options = {maxDate: unix};
+                                        if (from{{ data.id }}.touched) {
+                                            from{{ data.id }}.setDate(cachedValue);
+                                        }
+                                    }
+                                    $('.timeto'+{{ data.id }}).val($(".range-to-example{{ data.id }}").val());
+                                }
+                            });
+                            from{{ data.id }} = $(".range-from-example{{ data.id }}").persianDatepicker({
+                                inline: true,
+                                altField: '.range-from-example-alt',
+                                altFormat: 'LLLL',
+                                format: 'YYYY-M-D' ,
+                                initialValue: false,
+                                calendar: {
+                                    persian: {
+                                      locale: "en",
+                                      showHint: false,
+                                      leapYearMode: "algorithmic"
+                                    },
+                                    gregorian: {
+                                      locale: "en",
+                                      showHint: true
+                                    }
+                                  },
+                                onSelect: function (unix) {
+                                    from{{ data.id }}.touched = true;
+                                    if (to{{ data.id }} && to{{ data.id }}.options && to{{ data.id }}.options.minDate != unix) {
+                                        var cachedValue = to{{ data.id }}.getState().selected.unixDate;
+                                        to{{ data.id }}.options = {minDate: unix};
+                                        if (to{{ data.id }}.touched) {
+                                            to{{ data.id }}.setDate(cachedValue);
+                                        }
+                                    }
+                                    $('.timefrom'+{{ data.id }}).val($(".range-from-example{{ data.id }}").val());
+                                }
+                            });
+                        {% endfor %}
+                    {% endif %}
+                    $(document).ready(function() {
+                        $('.min').mousedown(function (){
+                            this.max = $('.max' + this.id).val();
+                        });
+                        $('.max').mousedown(function (){
+                          this.min = $('.min' + this.id).val();
+                          this.max = $('.count' + this.id).val();
+                        });
+                        $('.min_colleague').mousedown(function (){
+                            this.max = $('.max' + this.id + '_colleague').val();
+                        });
+                        $('.max_colleague').mousedown(function (){
+                          this.min = $('.min' + this.id + '_colleague').val();
+                          this.max = $('.count' + this.id + '_colleague').val();
+                        });
+                    });
+                    $('.colleague').click(function (){
+                        if ($('#switch'+  $(this).attr('data')).is(':checked')){
+                            $('.colleague' + $(this).attr('data')).attr('disabled', 'disabled');
+                        }else {
+                            $('.colleague' + $(this).attr('data')).removeAttr("disabled");
+                        };
+                    });
+                    $('.discount').click(function (){
+                        if ($('#discount'+  $(this).attr('data')).is(':checked')){
+                            $('.discount' + $(this).attr('data')).attr('disabled', 'disabled');
+                            $('.only-timepicker-from' + $(this).attr('data')).attr('disabled', 'disabled');
+                            $('.only-timepicker-to' + $(this).attr('data')).attr('disabled', 'disabled');
+                            $('.discount' + $(this).attr('data')).prop('required',false);
+                            $('.from'+ $(this).attr('data')).fadeOut(800);
+                            $('.from'+$(this).attr('data')).val('')
+                            $('.to'+$(this).attr('data')).val('')
+                            $('.timepicker').val('')
+                        }else {
+                            $('.discount' + $(this).attr('data')).removeAttr("disabled");
+                            $('.discount' + $(this).attr('data')).prop('required',true);
+                            $('.only-timepicker-from' + $(this).attr('data')).removeAttr("disabled");
+                            $('.only-timepicker-to' + $(this).attr('data')).removeAttr("disabled");
+                            $('.from'+ $(this).attr('data')).fadeIn(800);
+                            $('.from'+ $(this).attr('data')).addClass('inline-block');
+                            $('.from'+$(this).attr('data')).val('');
+                        };
+                    });
+
+                </script>
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+{% block modal %}
+    {% if datas %}
+        {% for data in datas %}
+            <div id="del{{ data.id }}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fill-danger-modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content modal-filled bg-danger">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="fill-danger-modalLabel">حذف آیتم</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                        </div>
+                        <div class="modal-body">
+                            آیا از حذف {{ data }} اطمینان دارید
+                        </div>
+                        <div class="modal-footer">
+                            <form method="post" action="{% url 'del_price' %}">
+                                <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                                <input type="hidden" name="id" value="{{ data.id }}">
+                                {% csrf_token %}
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">بازگشت</button>
+                                <button type="submit" class="btn btn-outline-light">حذف آیتم</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+{% block customjs %}
+    <script>
+        $(document).ready(function() {
+            $('.rounded').click(function (){
+                $('.rounded').removeClass('select');
+                $(this).addClass('select');
+                $('.color').val($(this).attr('data'));
+            });
+        });
+    </script>
+    <script src="{% static 'select2.min.js' %}"></script>
+    <script src="{% static 'script.js' %}"></script>
+    <script src="{% static 'assets\js\app.min.js'%}"></script>
+{% endblock %}

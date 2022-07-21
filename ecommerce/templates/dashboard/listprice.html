@@ -1,0 +1,67 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block customstyle %}
+    <style>
+        input[data-switch]:checked+label:after{
+            right: 78px;
+        }
+        .form-control{
+            width: 50%;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 style="font-size: 20px" class="header-title">لیست محصولات </h1>
+                    <br>
+                    <br>
+                    {% if datas %}
+                    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+                        <thead>
+                        <tr>
+                            <th>نام محصول </th>
+                        </tr>
+                        </thead>
+                        <tbody >
+                        {% for data in datas %}
+                            <tr>
+                                <td class="table-user">
+                                    <a href="{% url 'set_price' data.id %}">{{ data }}</a>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <br>
+                    <br>
+                    <br>
+                    <div class="row" style="text-align: center">
+                        <div class="alert alert-warning bg-white text-warning" role="alert">
+                            <strong>موردی یافت نشد !</strong>
+                        </div>
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+{% block customjs %}
+    <script src="{% static 'assets/js/vendor/jquery.dataTables.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.bootstrap5.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.responsive.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/responsive.bootstrap5.min.js'%}"></script>
+    <script src="{% static 'assets/js/pages/demo.datatable-init.js'%}"></script>
+{% endblock %}

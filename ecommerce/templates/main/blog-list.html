@@ -1,0 +1,659 @@
+﻿{% load static %}
+{% load tags %}
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title>وبلاگ {{ logo.first.title }}</title>
+
+  <!-- Favicon -->
+    {% if icon %}
+        <link rel="shortcut icon" href="{{ icon.first }}">
+    {% endif %}
+
+
+  <!-- CSS Implementing Plugins -->
+  <link rel="stylesheet" href="{% static 'main\assets\css\vendor.min.css' %}">
+  <link rel="stylesheet" href="{% static 'main\assets\vendor\bootstrap-icons\font\bootstrap-icons.css' %}">
+  <link href="{% static 'customize/main.css' %}" rel="stylesheet" type="text/css" id="light-style">
+  <link rel="stylesheet" href="{% static 'main\assets\css\theme.min.css' %}">
+  <style>
+      body{
+          font-family: IRANYekan,Inter,sans-serif
+        }
+        .col-md {
+            max-width: 200px;
+        }
+  </style>
+</head>
+
+<body>
+  <!-- ========== HEADER ========== -->
+  <header id="header" class="navbar navbar-expand-lg navbar-end navbar-absolute-top navbar-dark navbar-show-hide" data-hs-header-options='{
+            "fixMoment": 1000,
+            "fixEffect": "slide"
+          }'>
+
+    <div class="container">
+      <nav class="js-mega-menu navbar-nav-wrap">
+        <!-- Default Logo -->
+        {% if logo %}
+            <a class="navbar-brand" href="{% url 'index' %}" aria-label="Front">
+                <img class="navbar-brand-logo" src="{{ logo.first }}" alt="Logo">
+            </a>
+      {% endif %}
+        <!-- End Default Logo -->
+
+        <!-- Toggler -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-default">
+            <i class="bi-list"></i>
+          </span>
+          <span class="navbar-toggler-toggled">
+            <i class="bi-x"></i>
+          </span>
+        </button>
+        <!-- End Toggler -->
+
+        <!-- Collapse -->
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <div class="navbar-absolute-top-scroller">
+            <ul class="navbar-nav">
+                {% if valtreemenu %}
+                  {% for treemenu in valtreemenu %}
+                      {% if treemenu.tree %}
+                          <li class="hs-has-mega-menu nav-item">
+                              <a class="hs-mega-menu-invoker nav-link dropdown-toggle" href="#" id="megaMenuResponsiveMegaMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{ treemenu.name }}</a>
+                                <div class="hs-mega-menu dropdown-menu w-100 hs-mega-menu-desktop-md animated" aria-labelledby="megaMenuResponsiveMegaMenu" style="animation-duration: 300ms; display: none;">
+                                    <div class="navbar-dropdown-menu-inner">
+                                        <div class="row">
+                                            <div class="col-sm-6 col-md">
+                                              <ul class="nav" role="">
+                                                  {% for menu in valmenu %}
+                                                      {% if menu.tree == treemenu %}
+                                                          {% if forloop.counter|divisibleby:12 %}
+                                                                </ul>
+                                                              </div>
+                                                              <div class="col-sm-6 col-md">
+                                                                <ul class="nav" role="">
+                                                          {% endif %}
+                                                          <li onclick="location.href='{{ menu.link }}';" style="width:100%">
+                                                            <a class="dropdown-item"  id="nav-one-eg1-tab" href=".nav-{{ menu.id }}" data-bs-toggle="pill" data-bs-target=".nav-{{ menu.id }}" role="tab" aria-controls="nav-one-eg1" aria-selected="true">{{ menu }}</a>
+                                                          </li>
+                                                      {% endif %}
+                                                  {% endfor %}
+                                              </ul>
+                                            </div>
+                                            {% for menu in valmenu %}
+                                                {% if menu.tree == treemenu %}
+                                                    <div class="col-sm-6 col-md">
+                                                        <div class="tab-content">
+                                                          <div class="tab-pane fade nav-{{ menu.id }}"  role="tabpanel" aria-labelledby="nav-{{ menu.id }}">
+                                                              {% if valsubmenu %}
+                                                                    {% for submenu in valsubmenu %}
+                                                                        {% if submenu.selectmenu.id == menu.id %}
+                                                                            {% if forloop.counter|divisibleby:12 %}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-sm-6 col-md">
+                                                                                    <div class="tab-content">
+                                                                                        <div class="tab-pane fade nav-{{ menu.id }}"  role="tabpanel" aria-labelledby="nav-{{ menu.id }}">
+                                                                            {% endif %}
+                                                                            {% ifchanged %}
+                                                                                <span class="dropdown-header">{{ submenu.category.category.name }} </span>
+                                                                            {% endifchanged %}
+                                                                            <a class="dropdown-item " href='{{ submenu.get_absolute_url }}'>{{ submenu }}</a>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                          </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                      <!-- End Col -->
+                                    </div>
+                                    <!-- End Row -->
+                                  </div>
+                                </div>
+
+                          </li>
+                      {% else %}
+                          <li class="nav-item">
+                            <a class="nav-link active" href="{{ treemenu.link }}">{{ treemenu.name }}</a>
+                          </li>
+                      {% endif %}
+                  {% endfor %}
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+        <!-- End Collapse -->
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========== END HEADER ========== -->
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main id="content" role="main">
+    <!-- Hero -->
+    {% if valblogs %}
+    <div class="position-relative">
+      <!-- Swiper Main Slider -->
+      <div class="js-swiper-blog-journal-hero swiper">
+        <div class="swiper-wrapper">
+            {% for blog in valblogs|slice:":3" %}
+          <div class="swiper-slide d-flex gradient-x-overlay-sm-dark bg-img-start" style="background-image: url({{ blog.image.image.url }}); min-height: 40rem;">
+            <!-- Container -->
+            <div class="container d-flex align-items-center" style="min-height: 40rem;">
+              <div class="w-lg-50 me-3">
+                <!-- Media -->
+                <div class="d-flex align-items-center mb-3">
+
+                  <div class="flex-grow-1 ms-3">
+                    <a class="text-white" href="{{ blog.get_absolute_url }}">{{ blog.title}}</a>
+                  </div>
+                </div>
+                <!-- End Media -->
+
+                <div class="mb-5">
+                  <h2 class="h1 text-white">{{ blog.description_seo|truncatechars:'150' }}</h2>
+                </div>
+              </div>
+            </div>
+            <!-- End Container -->
+          </div>
+            {% endfor %}
+        </div>
+
+        <!-- Swiper Pagination -->
+        <div class="js-swiper-blog-journal-hero-pagination swiper-pagination swiper-pagination-light swiper-pagination-vertical swiper-pagination-middle-y-end me-3 d-lg-none"></div>
+      </div>
+      <!-- End Swiper Main Slider -->
+
+      <!-- Swiper Thumbs Slider -->
+      <div class="d-none d-lg-block container translate-middle-y position-absolute top-50 start-0 end-0 zi-2">
+        <div class="translate-middle-y position-absolute top-50 start-0">
+          <div class="js-swiper-blog-journal-hero-thumbs swiper" style="opacity:0;max-width: 13rem;">
+            <div class="swiper-wrapper">
+                {% for blog in valblogs|slice:":3" %}
+                     <!-- Slide -->
+                    <div class="swiper-slide swiper-pagination-progress swiper-pagination-progress-light py-3">
+                        <p class="text-white">{{ blog.title }}</p>
+
+                        <div class="swiper-pagination-progress-body">
+                          <div class="js-swiper-pagination-progress-body-helper swiper-pagination-progress-body-helper"></div>
+                        </div>
+                    </div>
+                      <!-- End Slide -->
+                {% endfor %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Swiper Thumbs Slider -->
+    </div>
+    {% endif %}
+    <!-- End Hero -->
+
+    <!-- Card Grid -->
+    <div class="container content-space-2 content-space-lg-3">
+      <div class="row justify-content-lg-between">
+        <div class="col-lg-8 mb-10 mb-lg-0">
+          <div class="d-grid gap-7 mb-7">
+              {% if valblogs %}
+                  {% for blog in valblogs %}
+                      <!-- Card -->
+                      <div class="card card-flush card-stretched-vertical">
+              <div class="row">
+                <div class="col-sm-5">
+                  <img class="card-img" src="{{ blog.image.image.url }}" alt="Image Description">
+                </div>
+                <!-- End Col -->
+
+                <div class="col-sm-7">
+                  <!-- Card Body -->
+                  <div class="card-body">
+                    <div class="mb-2">
+                      <a class="card-link" href="#">{{ blog.category }}</a>
+                    </div>
+
+                    <h3 class="card-title">
+                      <a class="text-dark" href="{{ blog.get_absolute_url }}">{{ blog.title }}</a>
+                    </h3>
+
+                    <p class="card-text">{{ blog.description_seo|truncatechars:'150' }}</p>
+
+                  </div>
+                  <!-- End Card Body -->
+                </div>
+                <!-- End Col -->
+              </div>
+              <!-- End Row -->
+            </div>
+                      <!-- End Card -->
+                  {% endfor %}
+              {% endif %}
+
+
+
+          </div>
+
+          <!-- Sticky Block End Point -->
+          <div id="stickyBlockEndPoint"></div>
+
+          <!-- Pagination -->
+          <nav aria-label="Page navigation">
+            <ul class="pagination">
+              <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Previous">
+                  <span aria-hidden="true">
+                    <i class="bi-chevron-double-left small"></i>
+                  </span>
+                </a>
+              </li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item disabled"><a class="page-link" href="#">...</a></li>
+              <li class="page-item"><a class="page-link" href="#">5</a></li>
+              <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                  <span aria-hidden="true">
+                    <i class="bi-chevron-double-right small"></i>
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <!-- End Pagination -->
+        </div>
+        <!-- End Col -->
+
+        <div class="col-lg-3">
+          <div class="mb-7">
+            <div class="mb-3">
+              <h3>خبر نامه</h3>
+            </div>
+
+            <!-- Form -->
+            <form>
+              <div class="mb-2">
+                <input type="text" class="form-control" placeholder="ایمیل خود را وارد کنید" aria-label="Enter email">
+              </div>
+              <div class="d-grid">
+                <button type="button" class="btn btn-primary">عضویت</button>
+              </div>
+            </form>
+            <!-- End Form -->
+
+            <p class="form-text">شما می توانید هر زمان لغو اشتراک کنید .</p>
+          </div>
+          <!-- Sticky Block Start Point -->
+          <div id="stickyBlockStartPoint"></div>
+
+          <div class="js-sticky-block" data-hs-sticky-block-options='{
+                 "parentSelector": "#stickyBlockStartPoint",
+                 "targetSelector": "#header",
+                 "breakpoint": "md",
+                 "startPoint": "#stickyBlockStartPoint",
+                 "endPoint": "#stickyBlockEndPoint",
+                 "stickyOffsetTop": 80
+               }'>
+              {% if valblogcategory %}
+                  <div class="mb-7">
+                  <div class="mb-3">
+                    <h3>دسته بندی ها</h3>
+                  </div>
+                  {% for blogcategory in valblogcategory %}
+                    <a class="btn btn-soft-secondary btn-xs mb-1" href="{{ blogcategory.get_absolute_url }}">{{ blogcategory.title }}</a>
+                  {% endfor %}
+                </div>
+              {% endif %}
+          </div>
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Card Grid -->
+  </main>
+  <!-- ========== END MAIN CONTENT ========== -->
+
+  <!-- ========== FOOTER ========== -->
+{% include 'main/footer.html' %}
+{% include 'main/other.html' %}
+  <!-- ========== END FOOTER ========== -->
+
+  <!-- ========== SECONDARY CONTENTS ========== -->
+  <!-- Sign Up -->
+  <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <!-- Header -->
+        <div class="modal-close">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!-- End Header -->
+
+        <!-- Body -->
+        <div class="modal-body">
+          <!-- Log in -->
+          <div id="signupModalFormLogin" style="display: none; opacity: 0;">
+            <!-- Heading -->
+            <div class="text-center mb-7">
+              <h2>Log in</h2>
+              <p>Don't have an account yet?
+                <a class="js-animation-link link" href="javascript:;" role="button" data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormSignup",
+                         "groupName": "idForm"
+                       }'>Sign up</a>
+              </p>
+            </div>
+            <!-- End Heading -->
+
+            <div class="d-grid gap-2">
+              <a class="btn btn-white btn-lg" href="#">
+                <span class="d-flex justify-content-center align-items-center">
+                  <img class="avatar avatar-xss me-2" src="assets\svg\brands\google-icon.svg" alt="Image Description">
+                  Log in with Google
+                </span>
+              </a>
+
+              <a class="js-animation-link btn btn-primary btn-lg" href="#" data-hs-show-animation-options='{
+                       "targetSelector": "#signupModalFormLoginWithEmail",
+                       "groupName": "idForm"
+                     }'>Log in with Email</a>
+            </div>
+          </div>
+          <!-- End Log in -->
+
+          <!-- Log in with Modal -->
+          <div id="signupModalFormLoginWithEmail" style="display: none; opacity: 0;">
+            <!-- Heading -->
+            <div class="text-center mb-7">
+              <h2>Log in</h2>
+              <p>Don't have an account yet?
+                <a class="js-animation-link link" href="javascript:;" role="button" data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormSignup",
+                         "groupName": "idForm"
+                       }'>Sign up</a>
+              </p>
+            </div>
+            <!-- End Heading -->
+
+            <form class="js-validate needs-validation" novalidate="">
+              <!-- Form -->
+              <div class="mb-3">
+                <label class="form-label" for="signupModalFormLoginEmail">Your email</label>
+                <input type="email" class="form-control form-control-lg" name="email" id="signupModalFormLoginEmail" placeholder="email@site.com" aria-label="email@site.com" required="">
+                <span class="invalid-feedback">Please enter a valid email address.</span>
+              </div>
+              <!-- End Form -->
+
+              <!-- Form -->
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="form-label" for="signupModalFormLoginPassword">Password</label>
+
+                  <a class="js-animation-link form-label-link" href="javascript:;" data-hs-show-animation-options='{
+                       "targetSelector": "#signupModalFormResetPassword",
+                       "groupName": "idForm"
+                     }'>Forgot Password?</a>
+                </div>
+
+                <input type="password" class="form-control form-control-lg" name="password" id="signupModalFormLoginPassword" placeholder="8+ characters required" aria-label="8+ characters required" required="" minlength="8">
+                <span class="invalid-feedback">Please enter a valid password.</span>
+              </div>
+              <!-- End Form -->
+
+              <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary form-control-lg">Log in</button>
+              </div>
+            </form>
+          </div>
+          <!-- End Log in with Modal -->
+
+          <!-- Sign up -->
+          <div id="signupModalFormSignup">
+            <!-- Heading -->
+            <div class="text-center mb-7">
+              <h2>Sign up</h2>
+              <p>Already have an account?
+                <a class="js-animation-link link" href="javascript:;" role="button" data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormLogin",
+                         "groupName": "idForm"
+                       }'>Log in</a>
+              </p>
+            </div>
+            <!-- End Heading -->
+
+            <div class="d-grid gap-3">
+              <a class="btn btn-white btn-lg" href="#">
+                <span class="d-flex justify-content-center align-items-center">
+                  <img class="avatar avatar-xss me-2" src="assets\svg\brands\google-icon.svg" alt="Image Description">
+                  Sign up with Google
+                </span>
+              </a>
+
+              <a class="js-animation-link btn btn-primary btn-lg" href="#" data-hs-show-animation-options='{
+                       "targetSelector": "#signupModalFormSignupWithEmail",
+                       "groupName": "idForm"
+                     }'>Sign up with Email</a>
+
+              <div class="text-center">
+                <p class="small mb-0">By continuing you agree to our <a href="#">Terms and Conditions</a></p>
+              </div>
+            </div>
+          </div>
+          <!-- End Sign up -->
+
+          <!-- Sign up with Modal -->
+          <div id="signupModalFormSignupWithEmail" style="display: none; opacity: 0;">
+            <!-- Heading -->
+            <div class="text-center mb-7">
+              <h2>Sign up</h2>
+              <p>Already have an account?
+                <a class="js-animation-link link" href="javascript:;" role="button" data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormLogin",
+                         "groupName": "idForm"
+                       }'>Log in</a>
+              </p>
+            </div>
+            <!-- End Heading -->
+
+            <form class="js-validate need-validate" novalidate="">
+              <!-- Form -->
+              <div class="mb-3">
+                <label class="form-label" for="signupModalFormSignupEmail">Your email</label>
+                <input type="email" class="form-control form-control-lg" name="email" id="signupModalFormSignupEmail" placeholder="email@site.com" aria-label="email@site.com" required="">
+                <span class="invalid-feedback">Please enter a valid email address.</span>
+              </div>
+              <!-- End Form -->
+
+              <!-- Form -->
+              <div class="mb-3">
+                <label class="form-label" for="signupModalFormSignupPassword">Password</label>
+                <input type="password" class="form-control form-control-lg" name="password" id="signupModalFormSignupPassword" placeholder="8+ characters required" aria-label="8+ characters required" required="">
+                <span class="invalid-feedback">Your password is invalid. Please try again.</span>
+              </div>
+              <!-- End Form -->
+
+              <!-- Form -->
+              <div class="mb-3" data-hs-validation-validate-class="">
+                <label class="form-label" for="signupModalFormSignupConfirmPassword">Confirm password</label>
+                <input type="password" class="form-control form-control-lg" name="confirmPassword" id="signupModalFormSignupConfirmPassword" placeholder="8+ characters required" aria-label="8+ characters required" required="" data-hs-validation-equal-field="#signupModalFormSignupPassword">
+                <span class="invalid-feedback">Password does not match the confirm password.</span>
+              </div>
+              <!-- End Form -->
+
+              <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary form-control-lg">Sign up</button>
+              </div>
+
+              <div class="text-center">
+                <p class="small mb-0">By continuing you agree to our <a href="#">Terms and Conditions</a></p>
+              </div>
+            </form>
+          </div>
+          <!-- End Sign up with Modal -->
+
+          <!-- Reset Password -->
+          <div id="signupModalFormResetPassword" style="display: none; opacity: 0;">
+            <!-- Heading -->
+            <div class="text-center mb-7">
+              <h2>Forgot password?</h2>
+              <p>Enter the email address you used when you joined and we'll send you instructions to reset your password.</p>
+            </div>
+            <!-- En dHeading -->
+
+            <form class="js-validate need-validate" novalidate="">
+              <div class="mb-3">
+                <!-- Form -->
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="form-label" for="signupModalFormResetPasswordEmail" tabindex="0">Your email</label>
+
+                  <a class="js-animation-link form-label-link" href="javascript:;" data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormLogin",
+                         "groupName": "idForm"
+                       }'>
+                    <i class="bi-chevron-left small"></i> Back to Log in
+                  </a>
+                </div>
+
+                <input type="email" class="form-control form-control-lg" name="email" id="signupModalFormResetPasswordEmail" tabindex="1" placeholder="Enter your email address" aria-label="Enter your email address" required="">
+                <span class="invalid-feedback">Please enter a valid email address.</span>
+                <!-- End Form -->
+              </div>
+            
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary form-control-lg">Submit</button>
+              </div>
+            </form>
+          </div>
+          <!-- End Reset Password -->
+        </div>
+        <!-- End Body -->
+
+        <!-- Footer -->
+
+        <!-- End Footer -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Go To -->
+  <a class="js-go-to go-to position-fixed" href="javascript:;" style="visibility: hidden;" data-hs-go-to-options='{
+       "offsetTop": 700,
+       "position": {
+         "init": {
+           "right": "2rem"
+         },
+         "show": {
+           "bottom": "2rem"
+         },
+         "hide": {
+           "bottom": "-2rem"
+         }
+       }
+     }'>
+    <i class="bi-chevron-up"></i>
+  </a>
+  <!-- ========== END SECONDARY CONTENTS ========== -->
+
+
+  <!-- JS Implementing Plugins -->
+  <script src="{% static 'assets\js\vendor.min.js' %}"></script>
+
+  <!-- JS Front -->
+  <script src="{% static 'assets\js\theme.min.js' %}"></script>
+
+  <!-- JS Plugins Init. -->
+  <script>
+    (function() {
+      // INITIALIZATION OF HEADER
+      // =======================================================
+      new HSHeader('#header').init()
+
+
+      // INITIALIZATION OF MEGA MENU
+      // =======================================================
+      new HSMegaMenu('.js-mega-menu', {
+          desktop: {
+            position: 'left'
+          }
+        })
+
+
+      // INITIALIZATION OF SHOW ANIMATIONS
+      // =======================================================
+      new HSShowAnimation('.js-animation-link')
+
+
+      // INITIALIZATION OF BOOTSTRAP VALIDATION
+      // =======================================================
+      HSBsValidation.init('.js-validate', {
+        onSubmit: data => {
+          data.event.preventDefault()
+          alert('Submited')
+        }
+      })
+
+
+      // INITIALIZATION OF BOOTSTRAP DROPDOWN
+      // =======================================================
+      HSBsDropdown.init()
+
+
+      // INITIALIZATION OF GO TO
+      // =======================================================
+      new HSGoTo('.js-go-to')
+
+
+      // INITIALIZATION OF SWIPER
+      // =======================================================
+      var sliderThumbs = new Swiper('.js-swiper-blog-journal-hero-thumbs', {
+        direction: 'vertical',
+        watchSlidesVisibility: true,
+        watchSlidesProgress: true,
+        slidesPerView: 3,
+        history: false,
+        on: {
+          'afterInit': function (swiper) {
+            swiper.el.style.opacity = 1
+            swiper.el.querySelectorAll('.js-swiper-pagination-progress-body-helper')
+                    .forEach($progress => $progress.style.transitionDuration = `${swiper.params.autoplay.delay}ms`)
+          }
+        }
+      });
+
+      var swiper = new Swiper('.js-swiper-blog-journal-hero',{
+        effect: 'fade',
+        autoplay: true,
+        loop: true,
+        pagination: {
+          el: '.js-swiper-blog-journal-hero-pagination',
+          clickable: true,
+        },
+        thumbs: {
+          swiper: sliderThumbs
+        }
+      });
+
+
+      // INITIALIZATION OF STICKY BLOCKS
+      // =======================================================
+      new HSStickyBlock('.js-sticky-block', {
+        targetSelector: document.getElementById('header').classList.contains('navbar-fixed') ? '#header' : null
+      })
+    })()
+  </script>
+</body>
+</html>

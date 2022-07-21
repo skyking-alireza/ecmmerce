@@ -1,0 +1,63 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block customstyle %}
+    <style>
+        input[data-switch]:checked+label:after{
+            right: 78px;
+        }
+        .form-control{
+            width: 50%;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 style="font-size: 20px" class="header-title">ست کردن آیکون سایت </h1>
+                    {% if data %}
+                            <img src="{{ data.first }}" alt="image" class="img-fluid rounded" width="200"/>
+                    {% else %}
+                        <div class="alert alert-warning bg-white text-warning" role="alert">
+                            <strong>آیکون سایت ست نشده است !</strong>
+                        </div>
+                    {% endif %}
+                    <br>
+                    <br>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% if data %}
+                            <input type="hidden" name="icon_id" value="{{ data.first.id }}">
+                        {% endif %}
+                        <div class="mb-3">
+                            <label class="form-label">یک عکس را انتخاب کنید</label>
+                            {{ form.image }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">ثبت اطلاعات</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+{% block formerrors %}
+    {% if  form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div style="text-align: right" class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>خطا </strong> {{ error }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+

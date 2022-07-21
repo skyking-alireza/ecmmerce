@@ -1,0 +1,70 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+  <!-- Required Meta Tags Always Come First -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title>Error 404</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'main\assets\css\vendor.min.css' %}">
+  <link rel="stylesheet" href="{% static 'main\assets\vendor\bootstrap-icons\font\bootstrap-icons.css' %}">
+  <link href="{% static 'customize/main.css' %}" rel="stylesheet" type="text/css" id="light-style">
+  <link rel="stylesheet" href="{% static 'main\assets\css\theme.min.css' %}">
+  <style>
+        body{
+          font-family: IRANYekan,Inter,sans-serif
+        }
+        .col-md {
+            max-width: 200px;
+        }
+  </style>
+</head>
+
+<body>
+  {% include 'main/header.html' %}
+  <main id="content" role="main">
+    <!-- Content -->
+    <div class="container text-center">
+      <div class="mb-3">
+        <img class="img-fluid" src="http://127.0.0.1/media/gallery/oc-error.svg" alt="Image Description" style="width: 30rem;">
+      </div>
+
+      <div class="mb-4">
+        <p class="fs-4 mb-0">!صفحه‌ای که دنبال آن بودید پیدا نشد</p>
+        <p class="fs-4">اگر شما فکر می کنید مشکلی وجود دارد به ما گزارش دهید</p>
+      </div>
+
+      <a class="btn btn-primary" href="{% url 'index' %}">بازگشت به صفحه اصلی</a>
+    </div>
+    <!-- End Content -->
+  </main>
+
+
+{% include 'main/other.html' %}
+{% include 'main/footer.html' %}
+  <!-- JS Front -->
+  <script src="{% static 'jquery-3.6.0.min.js' %}"></script>
+  <script src="{% static 'main\assets\vendor\aos\dist\aos.js' %}"></script>
+  <script>
+	$('.nav > li > a').hover(function() {
+      var tt = $(this).attr('href');
+      $('.tab-pane').removeClass("active show" );
+      $(tt).addClass( "active show" );
+	  {#$(this).tab('show');#}
+	});
+  </script>
+  <!-- JS Implementing Plugins -->
+  <script src="{% static 'main\assets\js\vendor.min.js' %}"></script>
+
+  <!-- JS Front -->
+  <script src="{% static 'main\assets\js\theme.min.js' %}"></script>
+</body>
+</html>

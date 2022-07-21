@@ -1,0 +1,149 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block customstyle %}
+    <style>
+        input[data-switch]:checked+label:after{
+            right: 78px;
+        }
+        .form-control{
+            width: 50%;
+        }
+        .mdi{
+            font-size: 22px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 style="font-size: 20px" class="header-title">منو های شاخه </h1>
+                    <br>
+                    <br>
+                    <form method="post">
+                        <input type="hidden" name="id_data" id="id-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">عنوان</label>
+                            {{ form.name }}
+                            <input type="hidden" name="index" value="1">
+                        </div>
+                        <div class="mb-3">
+                            <p style="font-weight: 600;">نوع نمایش </p>
+                            {{ form.tree }}
+                            <label class="form-check-label" for="switchmain">نمایش چند سطحی</label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">پیوند</label>
+                            {{ form.link }}
+                        </div>
+                        <p type="submit" class="btn btn-primary">ثبت اطلاعات</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+{% block tables %}
+    {% if datas %}
+        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+            <thead>
+            <tr>
+                <th>نام شاخه منو</th>
+                <th>ویرایش</th>
+                <th>حذف</th>
+            </tr>
+            </thead>
+            <tbody class="grid" >
+            {% for data in datas %}
+                <tr>
+                    <td id="menu{{ data.id}}">{{ data }}</td>
+                    <td><i data="{{ data.id}}" name="{{ data }}" tree="{{ data.tree|lower }}" link="{{ data.link }}"  class="mdi mdi-file-edit"></i></td>
+                    <td><i data="{{ data.id}}" class="mdi mdi-delete"></i></td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    {% else %}
+        <br>
+            <br>
+            <br>
+        <div class="row" style="text-align: center">
+
+            <div class="alert alert-warning bg-white text-warning" role="alert">
+                <strong>موردی یافت نشد !</strong>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block customjs %}
+    <script src="{% static 'axios.min.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/jquery.dataTables.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.bootstrap5.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.responsive.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/responsive.bootstrap5.min.js'%}"></script>
+    <script src="{% static 'assets/js/pages/demo.datatable-init.js'%}"></script>
+    <script>
+        var table = $('#basic-datatable').DataTable();
+        $('.mdi-file-edit').click(function () {
+            $('#id-data').val($(this).attr('data'));
+            $('#switchmain').prop('checked',eval($(this).attr('tree')));
+            $('#id_name').val($(this).attr('name'));
+            $('#id_link').val($(this).attr('link'));
+        });
+        $('.mdi-delete').click(function () {
+            axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+            axios.defaults.xsrfCookieName = "csrftoken";
+            axios({
+                method : "POST",
+                xsrfCookieName : 'csrftoken',
+                xsrfHeaderName : 'X-CSRFTOKEN',
+                data : {id : $(this).attr('data')},
+                url :'{% url "deletetreemenu"  %}',
+                headers : {
+                    'X-CSRFTOKEN' : 'csrftoken'
+                }
+            }).then((response) => {
+                if (response.data.text == 'ok'){
+                    table.row( $(this).parents('tr') ).remove().draw();
+                }else {
+                    alert('متاسفانه منو شاخه حذف نشد');
+                }
+            });
+        });
+        $('.btn-primary').click(function () {
+            axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+            axios.defaults.xsrfCookieName = "csrftoken";
+            axios({
+                method : "POST",
+                xsrfCookieName : 'csrftoken',
+                xsrfHeaderName : 'X-CSRFTOKEN',
+                data : {id : $('#id-data').val(),name : $('#id_name').val() ,tree: $("#switchmain").is(':checked'),link: $('#id_link').val()},
+                url :'{% url "settreemenu"  %}',
+                headers : {
+                    'X-CSRFTOKEN' : 'csrftoken'
+                }
+            }).then((response) => {
+                if (response.data.text == 'bad'){
+                    alert('متاسفانه منو اضافه و یاویرایش نشد');
+                }else {
+                    if (response.data.id){
+                        $('#menu'+response.data.id).html($('#id_name').val())
+                    }else {
+                        table.row.add(['<td id="menu'+response.data.idv+'">'+$('#id_name').val()+'</td>', '<i  data="'+response.data.idv+'" name="'+$('#id_name').val()+'" tree="'+$("#switchmain").is(':checked')+'" class="mdi mdi-file-edit"></i>','<i data="'+response.data.idv+'" class="mdi mdi-delete"></i>']).draw();
+                    }
+                }
+            });
+        });
+
+    </script>
+{% endblock %}

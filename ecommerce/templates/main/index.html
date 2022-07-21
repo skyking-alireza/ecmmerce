@@ -1,0 +1,492 @@
+﻿{% load static %}
+{% load tags %}
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title></title>
+
+  <!-- Favicon -->
+    {% if icon %}
+        <link rel="shortcut icon" href="{{ icon.first }}">
+    {% endif %}
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS Implementing Plugins -->
+  <link rel="stylesheet" href="{% static 'main\assets\css\vendor.min.css' %}">
+  <link rel="stylesheet" href="{% static 'main\assets\vendor\bootstrap-icons\font\bootstrap-icons.css' %}">
+  <link href="{% static 'customize/main.css' %}" rel="stylesheet" type="text/css" id="light-style">
+  <link rel="stylesheet" href="{% static 'main\assets\css\theme.min.css' %}">
+  <style>
+      body{
+          font-family: IRANYekan,Inter,sans-serif
+        }
+        .col-md {
+            max-width: 200px;
+        }
+  </style>
+</head>
+<body>
+{% include 'main/header.html' %}
+  <main id="content" role="main">
+  {% if valswiper %}
+    <!-- Hero -->
+    <div class="position-relative">
+      <!-- Swiper Main Slider -->
+      <div class="js-swiper-shop-classic-hero swiper bg-light">
+        <div class="swiper-wrapper">
+            {% for swiper in valswiper %}
+          <!-- Slide -->
+          <div class="swiper-slide">
+            <!-- Container -->
+            <div class="container content-space-t-2 content-space-b-3">
+              <div class="row align-items-lg-center">
+                <div class="col-lg-5 order-lg-2 mb-7 mb-lg-0">
+                  <div class="mb-6">
+                    <h1 class="display-4 mb-4">{{ swiper }}</h1>
+                    <p>{{ swiper.descriptions }}</p>
+                  </div>
+
+                  <div class="d-flex gap-2">
+                    <a class="btn btn-primary rounded-pill" href="{{ swiper.link }}">نمایش بیشتر</a>
+                  </div>
+                </div>
+                <!-- End Col -->
+
+                <div class="col-lg-6 order-lg-1">
+                  <div class="w-75 mx-auto">
+                    <img style="max-width: 100%" src="{{ swiper.image.image.url }}" alt="{{ swiper.image.image.alt }}">
+                  </div>
+                </div>
+                <!-- End Col -->
+              </div>
+              <!-- End Row -->
+            </div>
+            <!-- End Container -->
+          </div>
+          <!-- End Slide -->
+            {% endfor %}
+            <!-- End Container -->
+          </div>
+          <!-- End Slide -->
+        </div>
+
+        <!-- Arrows -->
+        <div class="js-swiper-shop-classic-hero-button-next swiper-button-next"></div>
+        <div class="js-swiper-shop-classic-hero-button-prev swiper-button-prev"></div>
+      </div>
+      <!-- End Swiper Main Slider -->
+
+      <!-- Swiper Thumbs Slider -->
+      <div class="position-absolute bottom-0 start-0 end-0 mb-3">
+        <div class="js-swiper-shop-hero-thumbs swiper" style="max-width: 13rem;">
+          <div class="swiper-wrapper">
+              {% for swiper in valswiper %}
+            <!-- Slide -->
+            <div class="swiper-slide">
+              <a class="js-swiper-thumb-progress swiper-thumb-progress-avatar" href="javascript:;" tabindex="0">
+                <img class="swiper-thumb-progress-avatar-img" src="{{swiper.image.image.url}}" alt="Image Description">
+              </a>
+            </div>
+            <!-- End Slide -->
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <!-- End Swiper Thumbs Slider -->
+    </div>
+    <!-- End Hero -->
+  {% endif %}
+    <!-- Icon Blocks -->
+  {% if valnavbar %}
+    <div class="border-bottom">
+      <div class="container content-space-2">
+        <div class="row">
+            <div class="js-swiper-responsive-breakpoint4 swiper">
+                <div class="swiper-wrapper">
+                {% for navbar in valnavbar %}
+                    <div class="swiper-slide" >
+                      <div class="">
+                        <!-- Icon Block -->
+                        <div class="d-flex">
+                          <div class="flex-shrink-0">
+                            <img class="avatar avatar-4x3" src="{{ navbar.image.image.url }}" alt="Image Description">
+                          </div>
+                          <div class="flex-grow-1 ms-4">
+                            <h4 class="mb-1">{{ navbar }}</h4>
+                            <p class="small mb-0">{{ navbar.descriptions }}</p>
+                          </div>
+                        </div>
+                        <!-- End Icon Block -->
+                      </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="js-swiper-responsive-breakpoint-pagination4 swiper-pagination"></div>
+    <!-- End Icon Blocks -->
+{% endif %}
+    <!-- Card Grid -->
+    <div class="container content-space-2 content-space-lg-3">
+      <!-- Heading -->
+    {% if valcategory %}
+      <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+        <h2> دسته بندی ها</h2>
+      </div>
+        <div class="row gx-3">
+        <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 mb-3">
+            <div class="js-swiper-responsive-breakpoint3 swiper">
+                <div class="swiper-wrapper">
+            {% for category in valcategory %}
+                <div class="swiper-slide" style="width: 360px;">
+                    <div style="width: 360px">
+                      <!-- Card -->
+                      <a class="card card-stretched-vertical card-transition shadow-none bg-img-start gradient-y-overlay-lg-dark" href="{{ category.get_absolute_url }}" style="background-image: url({{ category.image.image.url }}); min-height: 15rem;">
+                        <div class="card-body">
+
+                          <div class="card-footer">
+                            <h3 class="text-white mb-0">{{ category }}</h3>
+                            <span class="d-block text-white">{{ category.descriptions }}</span>
+                          </div>
+                        </div>
+                      </a>
+                      <!-- End Card -->
+                    </div>
+                </div>
+            {% endfor %}
+                </div>
+            </div>
+        </div>
+        </div>
+        <div class="js-swiper-responsive-breakpoint-pagination3 swiper-pagination"></div>
+        <!-- End Row -->
+    {% endif %}
+    </div>
+    <!-- End Card Grid -->
+    <!-- Card Grid -->
+    <div class="container content-space-2 content-space-lg-3">
+      <!-- Title -->
+      <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+        <h2>جدیدترین محصولات</h2>
+      </div>
+      <!-- End Title -->
+    {% if valproduct %}
+        <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 mb-3">
+            <div class="js-swiper-responsive-breakpoint2 swiper">
+                <div class="swiper-wrapper">
+        {% for product in valproduct|slice:":20" %}
+            <div class="swiper-slide">
+                  <div class="col mb-4">
+              <!-- Card -->
+              <div class="card card-bordered shadow-none text-center h-100">
+                <div class="card-pinned">
+                  <img class="card-img-top" src="{{ product.image.image.url }}" alt="{{ product.image.image.alt }}">
+                </div>
+
+                <div class="card-body">
+                  <div class="mb-2">
+                    <a class="link-sm link-secondary" href="{{ product.category.first.get_absolute_url }}">{{ product.category.first }}</a>
+                  </div>
+
+                  <h4 class="card-title">
+                    <a class="text-dark" href="{{ product.get_absolute_url }}">{{ product.name|truncatechars:55 }}</a>
+                  </h4>
+                    {% if product.get_price|is_str %}
+                        <p class="card-text text-dark ">{{ product.get_price }}</p>
+                        {% else %}
+                            {% if product.get_price.discount %}
+                                <span class="ms-2"><del id="price-discount" class="fa-price" data="{{ product.get_price.price }}"></del></span>
+                                <p class="card-text text-dark fa-price" data="{{ product.get_price.price_discount }}"></p>
+                                {% else %}
+                                <p class="card-text text-dark fa-price" data="{{ product.get_price.price }}"></p>
+                            {% endif %}
+
+                    {% endif %}
+                </div>
+
+                <div class="card-footer pt-0">
+                  <!-- Rating -->
+                  <a class="d-inline-flex align-items-center mb-3" href="#">
+                    <div class="d-flex gap-1 me-2">
+                    {% if product.get_stars|is_numberic %}
+                        {% for i in "x"|rjust:product.get_stars %}
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13.0079 2.6L15.7079 7.2L21.0079 8.4C21.9079 8.6 22.3079 9.7 21.7079 10.4L18.1079 14.4L18.6079 19.8C18.7079 20.7 17.7079 21.4 16.9079 21L12.0079 18.8L7.10785 21C6.20785 21.4 5.30786 20.7 5.40786 19.8L5.90786 14.4L2.30785 10.4C1.70785 9.7 2.00786 8.6 3.00786 8.4L8.30785 7.2L11.0079 2.6C11.3079 1.8 12.5079 1.8 13.0079 2.6Z" fill="#F39C12"></path>
+                            </svg>
+                        {% endfor %}
+                    {% endif %}
+
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <!-- End Card -->
+            </div>
+            </div>
+              {% endfor %}
+                </div>
+            </div>
+
+        <!-- End Col -->
+      </div>
+        <div class="js-swiper-responsive-breakpoint-pagination2 swiper-pagination"></div>
+    {% endif %}
+
+      <!-- End Row -->
+
+      <div class="text-center">
+        <a class="btn btn-outline-primary btn-transition rounded-pill" href="{% url 'product_grid' %}">نمایش تمامی محصولات</a>
+      </div>
+    </div>
+    <!-- End Card Grid -->
+
+    <!-- Subscribe -->
+        <div class="bg-light">
+      <div class="container content-space-2">
+        <div class="w-md-75 w-lg-50 text-center mx-md-auto">
+          <div class="row justify-content-lg-between">
+            <!-- Heading -->
+            <div class="mb-5">
+              <span class="text-cap">اشتراک</span>
+              <h2>از آخرین اخبار ما مطلع شوید</h2>
+            </div>
+            <!-- End Heading -->
+
+            <form>
+              <!-- Input Card -->
+              <div class="input-card input-card-pill input-card-sm border mb-3">
+                <div class="input-card-form">
+                  <label for="subscribeForm" class="form-label visually-hidden">ایمیل خود را وارد کنید</label>
+                  <input type="text" class="form-control form-control-lg" id="subscribeForm" placeholder="ایمیل خود را وارد کنید" aria-label="Enter email">
+                </div>
+                <button type="button" class="btn btn-primary btn-lg rounded-pill">عضویت</button>
+              </div>
+              <!-- End Input Card -->
+            </form>
+
+            <p class="small">شما می توانید هر زمان لغو اشتراک کنید . درباره ما <a href="#">بیشتر بدانید</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- End Subscribe -->
+
+    <!-- Clients -->
+    <div class="container content-space-2">
+    <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+        <h2>برندها</h2>
+      </div>
+      <div class="row">
+          {% if valbrand %}
+              <div class="js-swiper-responsive-breakpoint swiper">
+                  <div class="swiper-wrapper">
+                      {% for brand in valbrand %}
+                          <div class="swiper-slide">
+                          <a href="{{ brand.get_absolute_url }}">
+                              <div class="col text-center py-3">
+                                  <img class="avatar avatar-lg avatar-4x3" src="{{ brand.image.image.url }}" alt="{{ brand.name }}">
+                              </div>
+                          </a>
+                          </div>
+                      {% endfor %}
+                  </div>
+              </div>
+              <div class="js-swiper-responsive-breakpoint-pagination swiper-pagination"></div>
+          {% endif %}
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Clients -->
+  {% if valblog %}
+  <!-- Card Grid -->
+    <div class="container content-space-2 content-space-b-lg-3">
+    <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+        <h2>وبلاگ</h2>
+      </div>
+      <div class="row">
+        <div class="js-swiper-responsive-breakpoint5 swiper">
+            <div class="swiper-wrapper">
+          {% for blog in valblog %}
+              <div class="swiper-slide">
+          <div>
+          <!-- Card -->
+          <a class="card card-stretched-vertical card-transition bg-img-start gradient-y-overlay-sm-gray-900" href="{{blog.get_absolute_url}}" style="background-image: url({{ blog.image.image.url }}); min-height: 25rem;">
+            <div class="card-header">
+              <span class="card-subtitle text-white">{{ blog.title }}</span>
+            </div>
+
+            <div class="card-footer">
+              <h3 class="card-title text-white">{{ blog.description_seo|truncatechars:'175' }}</h3>
+            </div>
+          </a>
+          <!-- End Card -->
+        </div>
+              </div>
+          <!-- End Col -->
+          {% endfor %}
+                </div>
+            </div>
+          <div class="js-swiper-responsive-breakpoint-pagination5 swiper-pagination"></div>
+      </div>
+      <!-- End Row -->
+    </div>
+<!-- End Card Grid -->
+  {% endif %}
+  </main>
+{% include 'main/footer.html' %}
+{% include 'main/other.html' %}
+<script>
+  (function() {
+    // INITIALIZATION OF SWIPER
+    // =======================================================
+    var responsiveBreakpoint = new Swiper('.js-swiper-responsive-breakpoint', {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      pagination: {
+        el: '.js-swiper-responsive-breakpoint-pagination',
+        clickable: true,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 4,
+          spaceBetween: 40,
+        },
+        1024: {
+          slidesPerView: 5,
+          spaceBetween: 50,
+        },
+      }
+    });
+  })()
+</script>
+<script>
+  (function() {
+    // INITIALIZATION OF SWIPER
+    // =======================================================
+    var responsiveBreakpoint = new Swiper('.js-swiper-responsive-breakpoint2', {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      pagination: {
+        el: '.js-swiper-responsive-breakpoint-pagination2',
+        clickable: true,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 40,
+        },
+        1024: {
+          slidesPerView: 4,
+          spaceBetween: 50,
+        },
+      }
+    });
+  })()
+</script>
+<script>
+  (function() {
+    // INITIALIZATION OF SWIPER
+    // =======================================================
+    var responsiveBreakpoint = new Swiper('.js-swiper-responsive-breakpoint3', {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      pagination: {
+        el: '.js-swiper-responsive-breakpoint-pagination3',
+        clickable: true,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 1,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 40,
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 40,
+        },
+      }
+    });
+  })()
+</script>
+<script>
+  (function() {
+    // INITIALIZATION OF SWIPER
+    // =======================================================
+    var responsiveBreakpoint = new Swiper('.js-swiper-responsive-breakpoint4', {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      pagination: {
+        el: '.js-swiper-responsive-breakpoint-pagination4',
+        clickable: true,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 1,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 40,
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 40,
+        },
+      }
+    });
+  })()
+</script>
+<script>
+  (function() {
+    // INITIALIZATION OF SWIPER
+    // =======================================================
+    var responsiveBreakpoint = new Swiper('.js-swiper-responsive-breakpoint5', {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      pagination: {
+        el: '.js-swiper-responsive-breakpoint-pagination5',
+        clickable: true,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 1,
+          spaceBetween: 20,
+        },
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 40,
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 40,
+        },
+      }
+    });
+  })()
+</script>
+<script>
+    $('.fa-price').map(function () {
+        $(this).html((new Intl.NumberFormat("fa").format($(this).attr('data')))+ " تومان ");
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            {% block title %}
+            {% endblock %}
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+        <meta content="Coderthemes" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="assets\images\favicon.ico">
+
+        <!-- App css -->
+        <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/app-modern-rtl.min.css' %}" rel="stylesheet" type="text/css" id="light-style">
+        <link href="{% static 'customize/main.css' %}" rel="stylesheet" type="text/css" id="light-style">
+        {% block customstyle %}
+        {% endblock %}
+    </head>
+
+    <body class="show" data-layout="detached" style="font-family: IRANYekan,Inter,sans-serif" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+
+        <div class="container-fluid">
+
+            <!-- Begin page -->
+            <div class="wrapper">
+
+                <!-- ========== Left Sidebar Start ========== -->
+                <div class="leftside-menu leftside-menu-detached">
+                    <div class="leftbar-user">
+                    </div>
+
+
+                    <!--- Sidemenu -->
+                    <ul class="side-nav">
+
+                        <li class="side-nav-title side-nav-item">داشبورد</li>
+
+                        <li class="side-nav-item">
+                            <a  href="{% url 'dashboard' %}"  class="side-nav-link">
+                                <i class="uil uil-image-v"></i>
+                                <span> داشبورد </span>
+                            </a>
+                            <a data-bs-toggle="collapse" href="#gallerymanage" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="uil uil-image-v"></i>
+                                <span> گالری </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="gallerymanage">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{% url 'images_upload' %}">آپلود عکس</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'show_images' %}">نمایش عکس ها</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#InfoEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="dripicons-information"></i>
+                                <span> اطلاعات محصولات </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="InfoEcommerce">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{% url 'maincategory' %}">گروه محصولات</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'subcategory' %}">زیر گروه محصولات</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'brand' %}">برندها</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'color' %}">رنگ ها</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'warranty' %}">گارانتی ها</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'variable' %}">متغیر ها</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'details' %}">خصوصیات </a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'valuedetails' %}">مقدار خصوصیات </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#productprice" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                            <i class="mdi mdi-cash-multiple"></i>
+                                <span> مدیریت قیمت </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="productprice">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{% url 'list_price'  %}">قیمت گذاری</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#cart" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                            <i class="uil uil-shopping-basket"></i>
+                                <span> اطلاعات سفارش </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="cart">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{% url 'payments_view'  %}">سفارشات</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#products" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="uil uil-dropbox"></i>
+                                <span> مدیریت محصولات </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="products">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{% url 'show_products' %}">نمایش محصولات</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'create_product' %}">اضافه کردن محصول</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'allow_comment' %}">نظرات</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#listmenu" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="dripicons-menu"></i>
+                                <span> مدیریت منو ها </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="listmenu">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{% url 'treemenu' %}">منو های شاخه</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'menu' %}">منو ها</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'submenu' %}">منو های زیر مجموعه</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#content" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="uil-window"></i>
+                                <span> محتوای سایت </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="content">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="{% url 'generator_page' %}">صفحه ها</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'main_footer' %}">عناوین فوتر</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'sub_footer' %}">زیر مجموعه های فوتر</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'set_logo' %}">لوگوی و عنوان سایت</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'set_icon' %}">ایکون سایت</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'navbar_process' %}">نوار عملکرد</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'swiper' %}">اسلایدر</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'category_blog' %}">دسته بندی بلاگ</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'blogs' %}">وبلاگ</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'state' %}">استان</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'city' %}">شهر</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Left Sidebar End -->
+
+                <div class="content-page">
+                    <div class="content">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">
+                                        {% block pagetitle %}
+                                        {% endblock %}
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        {% block mainform %}
+
+                        {% endblock %}
+                        {% block formerrors %}
+                        {% endblock %}
+                        {% block tables %}
+                        {% endblock %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% block modal %}
+        {% endblock %}
+        <script src="{% static '\assets\js\vendor.min.js'%}"></script>
+        <script src="{% static '\assets\js/pages/demo.materialdesignicons.js'%}"></script>
+        <script src="{% static '\assets\js\app.min.js'%}"></script>
+        <script src="{% static 'jquery-3.6.0.min.js'%}"></script>
+        <script src="{% static 'axios.min.js' %}"></script>
+        <script>
+            $( document ).ready(function() {
+                axios.defaults.xsrfHeaderName = 'X_CSRFTOKEN';
+                axios.defaults.xsrfCookieName = 'csrftoken';
+                axios({
+                    method : 'GET',
+                    url : '{% url "dashbord_header" %}',
+                    xsrfCookieName : "csrftoken",
+                    xsrfHeaderName : "X-CSRFTOKEN",
+                    headers : {'X-CSRFTOKEN' : 'csrftoken'},
+                }).then((response) =>{
+                    $('.leftbar-user').html('<a href="#"><img src="'+response.data.image+'" alt="user-image" height="42" class="rounded-circle shadow-sm"><span class="leftbar-user-name">'+response.data.title+'</span></a>')
+                });
+            });
+        </script>
+
+        {% block customjs %}
+        {% endblock %}
+        <!-- Typehead -->
+        <script src="{% static '\assets\js\vendor\handlebars.min.js'%}"></script>
+        <script src="{% static '\assets\js\vendor\typeahead.bundle.min.js'%}"></script>
+
+        <!-- Demo -->
+        <script src="{% static '\assets\js\pages\demo.typehead.js'%}"></script>
+
+        <!-- Timepicker -->
+        <script src="{% static '\assets\js\pages\demo.timepicker.js'%}"></script>
+
+    </body>
+</html>

@@ -1,0 +1,144 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load tags %}
+{% load jalali_tags %}
+{% load static %}
+{% block customstyle %}
+    <link href="{% static 'assets/css\vendor\dataTables.bootstrap5.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/css\vendor\responsive.bootstrap5.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        input[data-switch]:checked+label:after{
+            right: 78px;
+        }
+        .form-control{
+            width: 50%;
+        }
+        .none{
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block tables %}
+
+    {% if datas %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-sm-5">
+                                <a href="{% url 'create_product' %}" class="btn btn-danger mb-2"><i class="mdi mdi-plus-circle me-2"></i> اضافه کردن محصول</a>
+                            </div>
+                            <div class="col-sm-7">
+                            </div><!-- end col-->
+                        </div>
+
+                        <div class="table-responsive">
+                            <div id="products-datatable_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer"><div class="row">
+                            </div><div class="row"><div class="col-sm-12"><table class="table table-centered w-100 dt-responsive nowrap dataTable no-footer dtr-inline" id="products-datatable" aria-describedby="products-datatable_info" style="width: 1146px;">
+                                <thead class="table-light">
+{#                                <tr><th class="all sorting sorting_asc" tabindex="0" aria-controls="products-datatable" rowspan="1" colspan="1" style="width: 289.8px;" aria-sort="ascending" aria-label="Product: activate to sort column descending">محصولات</th><th class="sorting" tabindex="0" aria-controls="products-datatable" rowspan="1" colspan="1" style="width: 114.8px;" aria-label="Category: activate to sort column ascending">دسته بندی</th><th class="sorting" tabindex="0" aria-controls="products-datatable" rowspan="1" colspan="1" style="width: 102.8px;" aria-label="Added Date: activate to sort column ascending">تاریخ</th><th class="sorting" tabindex="0" aria-controls="products-datatable" rowspan="1" colspan="1" style="width: 56.8px;" aria-label="Price: activate to sort column ascending">قیمت</th><th class="sorting" tabindex="0" aria-controls="products-datatable" rowspan="1" colspan="1" style="width: 76.8px;" aria-label="Quantity: activate to sort column ascending">بازدید</th><th class="sorting" tabindex="0" aria-controls="products-datatable" rowspan="1" colspan="1" style="width: 59.8px;" aria-label="Status: activate to sort column ascending">وضعیت نمایش</th><th style="width: 84.6px;" class="sorting_disabled" rowspan="1" colspan="1" aria-label="Action">کار ها</th></tr>#}
+                                    <tr>
+                                        <th class="all" style="width: 20px;">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="customCheck1">
+                                                <label class="form-check-label" for="customCheck1">&nbsp;</label>
+                                            </div>
+                                        </th>
+                                        <th class="all">محصولات</th>
+                                        <th>دسته بندی</th>
+                                        <th>تاریخ ایجاد</th>
+                                        <th>قیمت</th>
+                                        <th>بازدید</th>
+                                        <th>وضعیت</th>
+                                        <th style="width: 85px;">کارها</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for data in datas %}
+                                <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="customCheck2">
+                                            <label class="form-check-label" for="customCheck2">&nbsp;</label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <img src="{{ data.image.image.url }}" alt="{{ data.image.image.alt }}" title="contact-img" class="rounded me-3" height="48">
+                                        <p class="m-0 d-inline-block align-middle font-16">
+                                            <a href="#" class="text-body">{{ data.name|truncatechars:33 }}</a>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        {% for category in data.category.all %}
+                                            {% if forloop.first %}
+                                                {{ category }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {{ data.create_at|to_jalali:'%d/%m/%Y' }}
+                                    </td>
+                                    <td>
+                                    {% if data.get_price|is_str %}
+                                            <p class="card-text text-dark ">{{ data.get_price }}</p>
+                                        {% else %}
+                                            <p class="card-text text-dark fa-price" data="{{ data.get_price.price }}"></p>
+                                    {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {{ data.countview }}
+                                    </td>
+                                    <td>
+                                        {% if data.visibility == True %}
+                                            <span class="badge bg-success">فعال</span>
+                                            {% else %}
+                                            <span class="badge bg-danger">غیر فعال</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="table-action">
+                                        <a href="{{ data.get_absolute_url  }}" class="action-icon"> <i class="mdi mdi-eye"></i></a>
+                                        <a href="{% url 'update_product' %}?product={{ data.id }}" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>
+                                        <a href="{% url 'del_product' %}?product={{ data.id }}" class="action-icon"> <i class="mdi mdi-delete"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                                            </table></div></div>
+                                        </div>
+                                    </div> <!-- end card-body-->
+                                </div> <!-- end card-->
+                            </div> <!-- end col -->
+                        </div>
+    {% else %}
+        <br>
+            <br>
+            <br>
+        <div class="row" style="text-align: center">
+
+            <div class="alert alert-warning bg-white text-warning" role="alert">
+                <strong>موردی یافت نشد !</strong>
+            </div>
+        </div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block customjs %}
+    <script>
+        $('.fa-price').map(function () {
+            $(this).html((new Intl.NumberFormat("fa").format($(this).attr('data')))+ " تومان ");
+        });
+    </script>
+    <script src="{% static '\assets\js\pages\demo.products.js'%}"></script>
+    <script src="{% static '\assets\js\vendor\jquery.dataTables.min.js'%}"></script>
+    <script src="{% static '\assets\js\vendor\dataTables.bootstrap5.js'%}"></script>
+    <script src="{% static '\assets\js\vendor\dataTables.responsive.min.js'%}"></script>
+    <script src="{% static '\assets\js\vendor\responsive.bootstrap5.min.js'%}"></script>
+    <script src="{% static '\assets\js\vendor\dataTables.checkboxes.min.js'%}"></script>
+{% endblock %}

@@ -1,0 +1,142 @@
+{% load static %}
+<footer class="border-top">
+    <div class="container">
+      <div class="row justify-content-lg-between content-space-t-2 content-space-b-lg-2">
+        <div class="col-lg-3 mb-5">
+          <div class="d-flex align-items-start flex-column h-100 set-logo-footer">
+            <!-- Logo -->
+                <div class="spinner-grow spinner-navbar" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            <!-- End Logo -->
+
+
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2 ms-lg-auto mb-5 mb-lg-0 set-content-footer" style="display: flex">
+
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+    </div>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarEmptyShoppingCart">
+    <div class="offcanvas-header justify-content-end border-0 pb-0">
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    {% if not request.session.cart %}
+        <div id="cart-form" class="offcanvas-body">
+      <div class="text-center">
+        <div class="mb-5">
+          <img class="avatar avatar-xl avatar-4x3" src="{% static 'main\assets\svg\illustrations\oc-empty-cart.svg' %}" alt="SVG">
+        </div>
+
+        <div class="mb-5">
+          <h3>سبد خرید شما خالیست</h3>
+          <p>قبل از تسویه حساب چندین محصول را به سبد خرید خود اضافه نمایید . در صفحه فروشگاه ما محصولات جالبی خواهید یافت</p>
+        </div>
+
+        <a class="btn btn-primary btn-transition rounded-pill px-6" href="index.html">آغاز خرید</a>
+      </div>
+    </div>
+      {% else %}
+                  <!-- Content -->
+        <div class="offcanvas-body">
+          <div class="row">
+                <!-- Card -->
+                <div class="card card-sm shadow-sm mb-4">
+                  <div class="card-body">
+                    <div class="border-bottom pb-4 mb-4">
+                      <h3 class="card-header-title">خلاصه سبد خرید</h3>
+                    </div>
+
+                    <form>
+                        <div id="cart-form">
+                        </div>
+
+
+                      <div class="border-bottom pb-4 mb-4">
+                        <div class="d-grid gap-3">
+                          <table class="row">
+                            <td class="col-sm-6" style="color: black;font-weight: 600" >مجموع ایتم ها ({{ request.session.cart|length }})  </td>
+                            <td class="col-sm-6 mb-0" id="set-price-cart"></td>
+                          </table>
+                        </div>
+                      </div>
+
+                      <div class="d-grid">
+                        <a class="btn btn-primary btn-lg" href="../demo-shop/checkout.html">سبد خرید</a>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- End Card -->
+                </div>
+
+                <!-- Media -->
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0">
+                    <div class="svg-icon svg-icon-sm text-primary">
+
+
+
+
+
+                    </div>
+                  </div>
+                </div>
+                <!-- End Media -->
+            <!-- End Col -->
+          </div>
+          <!-- End Row -->
+        </div>
+        <!-- End Content -->
+      {% endif %}
+  </div>
+  </footer>
+    <script>
+        $(document).ready(function () {
+        axios.defaults.xsrfHeaderName = 'X_CSRFTOKEN';
+        axios.defaults.xsrfCookieName = 'csrftoken';
+        axios({
+            method: 'GET',
+            url: '{% url "return_footer" %}',
+            xsrfCookieName: "csrftoken",
+            xsrfHeaderName: "X-CSRFTOKEN",
+            headers: {'X-CSRFTOKEN': 'csrftoken'},
+        }).then((response) => {
+                if (response.data.main){
+                    response.data.main.forEach(main)
+                    function main(value, index, array) {
+                        $('.set-content-footer').append('<h5>'+value.title+'</h5> <ul style="min-width: 150px" class="list-unstyled list-py-1 set-footer-main'+value.id+'"></ul>')
+                    }
+                }
+                if (response.data.sub){
+                    response.data.sub.forEach(sub)
+                    function sub(value, index, array) {
+                        $('.set-footer-main'+value.main).append('<li><a class="link-sm text-secondary" href="'+value.link+'">'+value.title+'</a></li>')
+                    }
+                }
+
+            });
+        });
+    </script>
+    <script>
+        $('#show-cart').click(function () {
+        axios({
+            method : "GET",
+            url : '{% url "get_data_cart"  %}',
+        }).then((response) => {
+            $('#cart-form').html('');
+            $('#set-price-cart').html((new Intl.NumberFormat("fa").format(response.data.price ))+ " تومان ");
+            for (cart of response.data.text){
+                $('#cart-form').prepend(
+                    '<div class="border-bottom pb-4 mb-4"> <div class="d-flex"> <div class="flex-shrink-0"> <div class="avatar avatar-lg me-3"> <img class="avatar-img" src="'+cart['image']+'" alt="Image Description"></div> </div> <div class="flex-grow-1"><a href="'+cart['url']+'"> <h6>'+cart['name']+'</h6></a> <div class="d-grid"> <div class="text-body "> تومان '+(new Intl.NumberFormat("fa").format(cart['price']))+' </div> </div> <div class="d-grid"> <div class="text-body fa-"> تعداد '+cart['count']+' </div> </div> </div> </div> </div>'
+                );
+            }
+            $('#cart-form').append(
+                    '<div class="border-bottom pb-4 mb-4"> <div class="d-grid gap-3"> <dl class="row"> <dt class="col-sm-6">مجموع محصولات ('+(response.data.text).length+')</dt> <dd class="col-sm-6 text-sm-end mb-0"> قیمت کل '+(new Intl.NumberFormat("fa").format(response.data.price))+'</dd> </dl> <div class="d-grid"> <a class="btn btn-primary btn-lg" href="http://127.0.0.1/account/orders">سبد خرید</a></div> </div> </div>'
+                );
+        })
+    });
+    </script>
+

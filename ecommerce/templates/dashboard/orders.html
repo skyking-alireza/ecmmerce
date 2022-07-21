@@ -1,0 +1,166 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block customstyle %}
+    <link href="{% static 'assets/css/vendor/dataTables.bootstrap5.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/css/vendor/responsive.bootstrap5.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block mainform %}
+    <div class="content-page">
+                    <div class="content">
+
+                        <!-- start page title -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">تراکنش ها</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row mb-2">
+                                            <div class="col-xl-4">
+                                            </div><!-- end col-->
+                                        </div>
+                                        {% if datas %}
+                                            <div class="table-responsive">
+                                            <select id="change-status" style="width: 50%;margin: auto;margin-bottom: 20px" class="form-control">
+                                                <option value="100" selected >موفقیت آمیز</option>
+                                                <option value="1" >پرداخت انجام نشده است</option>
+                                                <option value="2" >پرداخت ناموفق بوده است</option>
+                                                <option value="3" >خطا رخ داده است</option>
+                                                <option value="6" >برگشت خورده سیستمی</option>
+                                                <option value="7" >انصراف از پرداخت</option>
+                                                <option value="10" >در انتظار تایید پرداخت</option>
+                                            </select>
+                                            <table id="scroll-horizontal-datatable" class="table w-100 nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th>کد تراکنش</th>
+                                                        <th>تاریخ</th>
+                                                        <th>وضعیت</th>
+                                                        <th>مبلغ</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="main_table" >
+                                                {% for payment in datas %}
+                                                    <tr>
+                                                        <td class="data_td" ><a href="{{payment.get_absulot_url  }}">{{ payment.bank_track_id }}</a></td>
+                                                        <td class="data_td fa-date" data="{{ payment.date }}"></td>
+                                                        <td class="data_td" ><h5><span class="badge badge-success-lighten"><i class="mdi mdi-bitcoin"></i> موفقیت آمیز</span></h5></td>
+                                                        <td  class="data_td fa-price" data="{{ payment.amount }}"></td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {% else %}
+                                            <br>
+                                            <br>
+                                            <br>
+                                            <div class="row" style="text-align: center">
+                                                <div class="alert alert-warning bg-white text-warning" role="alert">
+                                                    <strong>موردی یافت نشد !</strong>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+
+                                    </div> <!-- end card-body-->
+                                </div> <!-- end card-->
+                            </div> <!-- end col -->
+                        </div>
+                        <!-- end row -->
+
+                    </div> <!-- End Content -->
+
+                    <!-- Footer Start -->
+                    <footer class="footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <script>document.write(new Date().getFullYear())</script> © Hyper - Coderthemes.com
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="text-md-end footer-links d-none d-md-block">
+                                        <a href="javascript: void(0);">About</a>
+                                        <a href="javascript: void(0);">Support</a>
+                                        <a href="javascript: void(0);">Contact Us</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                    <!-- end Footer -->
+
+                </div> <!-- content-page -->
+{% endblock %}
+{% block customjs %}
+    <script src="/static/moment.js"></script>
+    <script src="{% static 'axios.min.js' %}"></script>
+    <script>
+        $('#change-status').change(function() {
+            axios.defaults.xsrfHeaderName = 'X_CSRFTOKEN';
+            axios.defaults.xsrfCookieName = 'csrftoken';
+            axios({
+                method : 'POST',
+                url : '{% url "change_payment_status" %}',
+                xsrfCookieName : "csrftoken",
+                xsrfHeaderName : "X-CSRFTOKEN",
+                data : {'status_id' : $(this).val()},
+                headers : {'X-CSRFTOKEN' : 'csrftoken'},
+            }).then((response) =>{
+                $('.data_td').remove();
+                var tablemain = $('#scroll-horizontal-datatable').DataTable();
+                tablemain.clear();
+                response.data.map(set_table_row);
+                function set_table_row(td) {
+                    tablemain.row.add(['<a href="order_details/'+td.order_id+'"><p>'+td.bank_track_id+'</p></a>',new Intl.DateTimeFormat('fa-IR', {dateStyle: 'full', timeStyle: 'short'}).format(moment.unix(td.date)) ,set_status() ,new Intl.NumberFormat("fa").format(td.amount)+ " تومان " ]).draw(false);
+                };
+                function set_status(){
+                    if ($('#change-status').val() == 100){
+                        return '<h5><span class="badge badge-success-lighten"><i class="mdi mdi-bitcoin"></i>'+$( "#change-status option:selected" ).text()+'</span></h5>'
+                    }else if ($('#change-status').val() == 3){
+                        return '<h5><span class="badge badge-danger-lighten"><i class="mdi mdi-cancel"></i>'+$( "#change-status option:selected" ).text()+'</span></h5>'
+                    }else{
+                        return '<h5><span class="badge badge-warning-lighten"><i class="mdi mdi-timer-sand"></i>'+$( "#change-status option:selected" ).text()+'</span></h5>'
+                    }
+
+                }
+                });
+            });
+    </script>
+
+    <script>
+    $( document ).ready(function() {
+        $('.fa-date').map(function () {
+            $(this).html(new Intl.DateTimeFormat('fa-IR', {dateStyle: 'full', timeStyle: 'short'}).format(moment.unix($(this).attr('data'))));
+        });
+    });
+    $( document ).ready(function() {
+        $('.fa-price').map(function () {
+            $(this).html((new Intl.NumberFormat("fa").format($(this).attr('data')))+ " تومان ");
+        });
+    });
+    </script>
+    <!-- Datatables js -->
+    <script src="{% static 'assets/js/vendor/jquery.dataTables.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.bootstrap5.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.responsive.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/responsive.bootstrap5.min.js'%}"></script>
+
+    <!-- Datatable Init js -->
+    <script src="{% static 'assets/js/pages/demo.datatable-init.js'%}"></script>
+    <script>
+        $('#scroll-horizontal-datatable').DataTable();
+    </script>
+{% endblock %}

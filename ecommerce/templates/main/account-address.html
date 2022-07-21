@@ -1,0 +1,180 @@
+﻿{% extends 'main/card-body.html' %}
+{% load static %}
+{% block main %}
+    <div class="col-lg-9">
+          <!-- Card -->
+          <div class="card">
+            <!-- Header -->
+            <div class="card-header border-bottom">
+              <h5 class="card-header-title">آدرس های من</h5>
+            </div>
+            <!-- End Header -->
+
+            <!-- Body -->
+            <div class="card-body">
+              <div class="row">
+                  {% if addresses %}
+                      {% for address in addresses %}
+                          <div class="col-sm-6 mb-5 mb-sm-7">
+                              <!-- Radio Check -->
+                              <div class="form-check form-check-inline w-100 h-100">
+                                <label class="form-check-label" for="billingRadio1">
+                                  <span class="h5 d-block">{{ address }}</span>
+                                  <span class="d-block mb-2">
+                                    {{ address.description|truncatechars:"35" }}
+                                  </span>
+                                  <span class="d-block mb-2">
+                                    {{ address.zipcode }}
+                                  </span>
+
+                                  <p  data="{{ address.id }}" class="btn btn-white btn-xs update-address">
+                                    <i class="bi-pencil-fill me-1"></i> ویرایش آدرس
+                                  </p>
+                                </label>
+                              </div>
+                              <!-- End Radio Check -->
+                            </div>
+                      {% endfor %}
+                  {% else %}
+                      <div class="alert alert-soft-danger" role="alert">
+                          آدرسی یافت نشد
+                      </div>
+                  {% endif %}
+                <div class="col-sm-6 mb-5 mb-sm-7">
+                  <!-- Card -->
+                  <a class="card card-dashed card-centered" href="javascript:;" data-bs-toggle="modal" data-bs-target="#accountAddAddressModal">
+                    <div class="card-body card-dashed-body py-8">
+                      <img class="avatar avatar-lg avatar-4x3 mb-2" src="/media/illustrations/oc-address.svg" alt="Image Description">
+                      <span class="d-block"><i class="bi-plus"></i> افزودن آدرس</span>
+                    </div>
+                  </a>
+                  <!-- End Card -->
+                </div>
+                <!-- End Col -->
+              </div>
+              <!-- End Row -->
+            </div>
+            <!-- End Body -->
+          </div>
+          <!-- End Card -->
+        </div>
+    <div class="modal fade" id="accountAddAddressModal" tabindex="-1" aria-labelledby="accountAddAddressModalLabel" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <!-- Header -->
+        <div class="modal-header">
+          <h4 class="modal-title" id="accountAddAddressModalLabel">افزودن ادرس</h4>
+          <button style="margin: 0" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!-- End Header -->
+
+        <!-- Body -->
+        <div class="modal-body">
+          <!-- Form -->
+          <form method="post" id="form-address">
+          {% csrf_token %}
+            <!-- Form -->
+            <div class="row mb-4">
+              <label for="locationLabel" class="col-sm-3 col-form-label form-label">عنوان</label>
+
+              <div class="col-sm-9">
+
+                <div class="mb-3">
+                  <input type="text" class="form-control" name="title" id="cityLabel" placeholder="عنوان" aria-label="City">
+                </div>
+              </div>
+            </div>
+            <!-- End Form -->
+            <!-- Form -->
+            <div class="row mb-4">
+              <label for="js-select form-select" class="col-sm-3 col-form-label form-label">شهر</label>
+
+              <div class="col-sm-9">
+                             <!-- Select -->
+                 <div class="tom-select-custom">
+                  <select name="city" id="exampleFormControlSelect1" class="form-control">
+                            <optgroup label="نمایش استان ها">
+                      {% for city in cities %}
+                          {% ifchanged city.state %}
+                              </optgroup>
+                              <optgroup label="{{ city.state }}">
+                          {% endifchanged %}
+                                <option value="{{ city.id }}">{{ city }}</option>
+                      {% endfor %}
+                             </optgroup>
+                  </select>
+                 </div>
+                <!-- End Select -->
+              </div>
+            </div>
+              <div class="row mb-4">
+              <label for="addressLine1Label" class="col-sm-3 col-form-label form-label">آدرس</label>
+
+              <div class="col-sm-9">
+                <input type="text" class="form-control" name="description" id="addressLine1Label" placeholder="آدرس شما" aria-label="Your address">
+              </div>
+            </div>
+            <!-- End Form -->
+
+            <!-- Form -->
+            <div class="row mb-4">
+              <label for="zipCodeLabel" class="col-sm-3 col-form-label form-label">کد پستی</label>
+
+              <div class="col-sm-9">
+                <input type="text" class="js-masked-input form-control" name="zipcode" id="zipCodeLabel" placeholder="کد پستی شما" aria-label="Your zip code" data-hs-mask-options='{
+                         "mask": "0000000000"
+                       }'>
+              </div>
+            </div>
+            <!-- End Form -->
+
+            <div class="d-flex justify-content-end gap-3">
+              <button type="button" class="btn btn-white"  data-bs-dismiss="modal" aria-label="Close" data-dismiss="modal">بستن</button>
+              <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+            </div>
+          <input type="hidden" name="user" value="{{ user.id }}">
+          </form>
+          <!-- End Form -->
+            {% if  form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div style="text-align: right" class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <strong>خطا </strong> {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <!-- End Body -->
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block customjs %}
+    <script src="{% static 'axios.min.js' %}"></script>
+    <script>
+        var control = HSCore.components.HSTomSelect.init('.js-select')
+        control.setValue(5)
+    </script>
+    <script>
+        var xxx = 555555;
+        $('.update-address').click(function () {
+            axios({
+                method : "GET",
+                url : '{% url "update_address"  %}?data=' + $(this).attr('data'),
+            }).then((response) => {
+                $('#cityLabel').val((response.data.text).title);
+                $('#exampleFormControlSelect1').val((response.data.text).city);
+                $('#addressLine1Label').val((response.data.text).description);
+                $('#zipCodeLabel').val((response.data.text).zipcode);
+                $('<input>').attr({
+                    type: 'hidden',
+                    value: (response.data.text).id,
+                    name: 'address-id',
+                }).appendTo('#form-address');
+                $('#accountAddAddressModal').modal('show');
+            });
+        });
+    </script>
+{% endblock %}
