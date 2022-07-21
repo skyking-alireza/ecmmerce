@@ -1,0 +1,370 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block customstyle %}
+    <link href="{% static 'assets/css/vendor/dataTables.bootstrap5.css' %}" rel="stylesheet" type="text/css"/>
+    <link href="{% static 'assets/css/vendor/responsive.bootstrap5.css' %}" rel="stylesheet" type="text/css"/>
+    <script src="{% static 'axios.min.js' %}"></script>
+    <style>
+        input[data-switch]:checked + label:after {
+            right: 78px;
+        }
+
+        .form-control {
+            width: 50%;
+        }
+
+        .pointer {
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <div class="content-page">
+        <div class="content">
+            <!-- start page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box">
+                        <div class="page-title-right">
+                            <form class="d-flex">
+                                <div class="input-group">
+                                    <input type="text" class="form-control form-control-light" id="dash-daterange">
+                                    <span class="input-group-text bg-primary border-primary text-white">
+                                                    <i class="mdi mdi-calendar-range font-13"></i>
+                                                </span>
+                                </div>
+                            </form>
+                        </div>
+                        <h4 class="page-title">داشبورد</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row">
+                <div class="col-xl-5 col-lg-6">
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="card widget-flat">
+                                <div class="card-body">
+                                    <div class="float-end">
+                                        <i class="mdi mdi-account-multiple widget-icon"></i>
+                                    </div>
+                                    <h5 class="text-muted fw-normal mt-0" title="Number of Customers">مشتریان</h5>
+                                    <h3 class="mt-3 mb-3 fa-num" data="{{ countuser }}"></h3>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col-->
+
+                        <div class="col-sm-6">
+                            <div class="card widget-flat">
+                                <div class="card-body">
+                                    <div class="float-end">
+                                        <i class="mdi mdi-cart-plus widget-icon bg-success-lighten text-success"></i>
+                                    </div>
+                                    <h5 class="text-muted fw-normal mt-0" title="Number of Orders">تراکنش ها</h5>
+                                    <h3 class="mt-3 mb-3 fa-num" data="{{ countpayment.count }}"></h3>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col-->
+                    </div> <!-- end row -->
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="card widget-flat">
+                                <div class="card-body">
+                                    <div class="float-end">
+                                        <i class="mdi mdi-currency-usd widget-icon bg-success-lighten text-success"></i>
+                                    </div>
+                                    <h5 class="text-muted fw-normal mt-0" title="Average Revenue">درآمد</h5>
+                                    <h3 class="mt-3 mb-3 fa-price" data="{{ sumamount }}"></h3>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col-->
+
+                        <div class="col-sm-6">
+                            <div class="card widget-flat">
+                                <div class="card-body">
+                                    <div class="float-end">
+                                        <i class="mdi mdi-pulse widget-icon"></i>
+                                    </div>
+                                    <h5 class="text-muted fw-normal mt-0" title="Growth">بازدید سایت</h5>
+                                    <h3 class="mt-3 mb-3 fa-num" data="{{ viewsite.count }}"></h3>
+                                </div> <!-- end card-body-->
+                            </div> <!-- end card-->
+                        </div> <!-- end col-->
+                    </div> <!-- end row -->
+
+                </div> <!-- end col -->
+
+                <div class="col-xl-7 col-lg-6">
+                    <div class="card card-h-100">
+                        <div class="card-body">
+                            <h4 class="header-title mb-3">فروش این هفته</h4>
+
+                            <div dir="ltr">
+                                <div id="high-performing-product" class="apex-charts"
+                                     data-colors="#536de6,#e3eaef"></div>
+                            </div>
+
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+
+                </div> <!-- end col -->
+            </div>
+            <!-- end row -->
+
+            <div class="row">
+                <div class="col-xl-6 col-lg-12 order-lg-2 order-xl-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title mt-2 mb-3">جدید ترین سفارشات</h4>
+
+                            <div class="table-responsive">
+                                <table class="table table-centered table-nowrap table-hover mb-0">
+                                    <tbody>
+                                    {% if countorders %}
+                                        {% for countorder in countorders %}
+                                            <tr>
+                                                <td>
+                                                    <h5 class="font-14 my-1 fw-normal">{{ countorder.user.get_full_name }}</h5>
+                                                    <span class="text-muted font-13 fa-date"
+                                                          data="{{ countorder.payment_id.date }}"></span>
+                                                </td>
+                                                <td>
+                                                    <h5 class="font-14 my-1 fw-normal">{{ countorder.payment_id.returnstatus }}</h5>
+                                                    <span class="text-muted font-13">وضعیت</span>
+                                                </td>
+                                                <td>
+                                                    <h5 class="font-14 my-1 fw-normal">{{ countorder.count }}</h5>
+                                                    <span class="text-muted font-13">تعداد</span>
+                                                </td>
+                                                <td>
+                                                    <h5 class="font-14 my-1 fw-normal fa-num"
+                                                        data="{{ countorder.payment_id.amount }}"></h5>
+                                                    <span class="text-muted font-13">تومان</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <h1>بدون سفارش</h1>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                            </div> <!-- end table-responsive-->
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end col-->
+
+                <div class="col-xl-3 col-lg-6 order-lg-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="header-title">پربازدید ترین محصولات</h4>
+
+                            <div id="average-sales" class="apex-charts mb-4 mt-4"
+                                 data-colors="#536de6,#10c469,#ff5b5b,#f9c851"></div>
+
+
+                            <div class="chart-widget-list">
+                                {% if countpro %}
+                                    {% for foo in countpro %}
+                                        <p>
+                                            <i class="mdi mdi-square text-primary"></i> <a href="{{ foo.get_absolute_url }}">{{ foo.name|truncatechars:15 }}</a>
+                                            <span class="float-end">{{ foo.countview }}</span>
+                                        </p>
+                                    {% endfor %}
+                                {% else %}
+                                    <h1>محصول پربازدیدی یافت نشد</h1>
+                                {% endif %}
+                            </div>
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end col-->
+
+                <div class="col-xl-3 col-lg-6 order-lg-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="dropdown float-end">
+                                <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+                                    <i class="mdi mdi-dots-vertical"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item">Sales Report</a>
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item">Export Report</a>
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item">Profit</a>
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item">Action</a>
+                                </div>
+                            </div>
+                            <h4 class="header-title mb-2">جدید ترین کامنت ها</h4>
+
+                            <div data-simplebar="" style="max-height: 419px;">
+                                <div class="timeline-alt pb-0">
+                                    {% if countcommentpro %}
+                                        {% for foo in countcommentpro %}
+                                        <div class="timeline-item">
+                                            <i class="dripicons-message bg-info-lighten text-info timeline-icon"></i>
+                                            <div class="timeline-item-info">
+                                                <a href="#" class="text-info fw-bold mb-1 d-block">{{ foo.title }}</a>
+                                                <small>{{ foo.text|truncatechars:150 }}</small>
+                                                <p class="mb-0 pb-2">
+                                                    <small class="text-muted fa-date" data="{{ foo.sendtime }}"></small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+
+                                    {% else %}
+                                        <h1>کامنتی وجود ندارد</h1>
+                                    {% endif %}
+                                </div>
+                                <!-- end timeline -->
+                            </div> <!-- end slimscroll -->
+                        </div>
+                        <!-- end card-body -->
+                    </div>
+                    <!-- end card-->
+                </div>
+                <!-- end col -->
+            </div>
+            <!-- end row -->
+        </div> <!-- End Content -->
+
+        <!-- Footer Start -->
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <script>document.write(new Date().getFullYear())</script>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+        <!-- end Footer -->
+
+    </div>
+{% endblock %}
+
+{% block customjs %}
+    <script>
+        $('#dash-daterange').val(new Intl.DateTimeFormat('fa-IR', {
+            dateStyle: 'long',
+            timeStyle: 'short'
+        }).format(new Date()));
+        $('.fa-price').map(function () {
+            $(this).html((new Intl.NumberFormat("fa").format($(this).attr('data'))) + " تومان ");
+        });
+        $('.fa-date').map(function () {
+            $(this).html(new Intl.DateTimeFormat('fa-IR', {
+                dateStyle: 'long',
+                timeStyle: 'short'
+            }).format(new Date(parseInt($(this).attr('data') + '000'))));
+        });
+        $('.fa-num').map(function () {
+            $(this).html((new Intl.NumberFormat("fa").format($(this).attr('data'))));
+        });
+        ts = {{ timestamp }} +'000';
+        listamount = [0, 0, 0, 0, 0, 0, 0];
+        {% for foo in countpayment %}
+            if (parseInt({{ foo.date }}) < {{ timestamp }}) {
+
+            } else {
+                date = new Date(parseInt({{ foo.date }} +'000'));
+                listamount[date.getDay()] += {{ foo.amount }};
+            }
+        {% endfor %}
+
+    </script>
+    <script src="moment.js"></script>
+    <script src="{% static 'main\assets\js\theme.min.js' %}"></script>
+    <script src="{% static 'main\assets\js\vendor.min.js' %}"></script>
+    <script src="{% static 'assets\js\app.min.js' %}"></script>
+    <script src="{% static 'assets\js\vendor\apexcharts.min.js' %}"></script>
+    <script src="{% static 'assets\js\vendor\jquery-jvectormap-1.2.2.min.js' %}"></script>
+    <script src="{% static 'assets\js\vendor\jquery-jvectormap-world-mill-en.js' %}"></script>
+    <script src="{% static 'assets\js\pages\demo.dashboard.js' %}"></script>
+    <script>
+        var options = {
+            series: [{
+                name: 'مبلغ',
+                data: listamount
+            }],
+            chart: {
+                type: 'bar',
+                height: 350
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded'
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: ['شنبه', 'یکشنبه', 'دوشنبه', 'سه شنبه', 'چهار شنبه', 'پنجشنبه', 'جمعه'],
+            },
+            yaxis: {
+                title: {
+                    text: ' (تومان)'
+                }
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return +val + " تومان"
+                    }
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#high-performing-product"), options);
+        chart.render();
+    </script>
+    <script>
+        {% if countpro %}
+            list1 = [];
+            list2 = [];
+            {% for foo in countpro %}
+                list1.push(parseInt({{ foo.countview }}))
+                list2.push('{{ foo.name }}');
+
+            {% endfor %}
+            e=["#727cf5","#0acf97","#fa5c7c","#ffbc00"];
+        var options2 = {
+            chart: {height: 208, type: "donut"},
+            legend: {show: !1},
+            stroke: {colors: ["transparent"]},
+            series: list1,
+            labels: list2,
+            colors: e,
+            responsive: [{breakpoint: 480, options: {chart: {width: 200}, legend: {position: "bottom"}}}]};
+
+            var chart2 = new ApexCharts(document.querySelector("#average-sales"), options2);
+            chart2.render();
+        {% endif %}
+
+    </script>
+{% endblock %}

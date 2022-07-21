@@ -1,0 +1,143 @@
+{% load static %}
+<header id="header" class="navbar navbar-expand-lg navbar-end navbar-light">
+
+    <div class="container">
+        <nav class="js-mega-menu navbar-nav-wrap">
+                <a class="navbar-brand" id="set-logo" href="{% url 'index' %}" aria-label="Front">
+                    <div class="spinner-grow spinner-logo" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                    aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-default">
+            <i class="bi-list"></i>
+          </span>
+                <span class="navbar-toggler-toggled">
+            <i class="bi-x"></i>
+          </span>
+            </button>
+            <!-- End Toggler -->
+
+            <!-- Collapse -->
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <div class="set-navbar" style="display: flex">
+                        <div class="spinner-grow spinner-navbar" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="set-other">
+                        <li class="nav-item">
+                        <!-- Search -->
+                        <button class="btn btn-ghost-secondary btn-sm btn-icon" type="button" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasNavbarSearch" aria-controls="offcanvasNavbarSearch">
+                            <i class="bi-search"></i>
+                        </button>
+                        <!-- End Search -->
+
+                        <!-- Shopping Cart -->
+                        <button type="button" id="show-cart" class="btn btn-ghost-secondary btn-sm btn-icon"
+                                type="button" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasNavbarEmptyShoppingCart"
+                                aria-controls="offcanvasNavbarEmptyShoppingCart">
+                            <i class="bi-basket"></i>
+                        </button>
+                        <!-- End Shopping Cart -->
+                        {% if user.is_authenticated %}
+                            {% if user.is_superuser %}
+                                <a href="{% url 'dashboard' %}">
+                                    <button class="btn btn-primary btn-transition" type="button">داشبورد</button>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'profile' %}">
+                                    <button class="btn btn-primary btn-transition" type="button">پروفایل</button>
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <button class="btn btn-primary btn-transition" type="button" data-bs-toggle="modal"
+                                    data-bs-target="#signupModal">عضویت
+                            </button>
+                        {% endif %}
+                    </li>
+                    </div>
+
+
+                </ul>
+            </div>
+            <!-- End Collapse -->
+        </nav>
+    </div>
+</header>
+<script src="{% static 'jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'axios.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        axios.defaults.xsrfHeaderName = 'X_CSRFTOKEN';
+        axios.defaults.xsrfCookieName = 'csrftoken';
+        axios({
+            method: 'GET',
+            url: '{% url "return_header" %}',
+            xsrfCookieName: "csrftoken",
+            xsrfHeaderName: "X-CSRFTOKEN",
+            headers: {'X-CSRFTOKEN': 'csrftoken'},
+        }).then((response) => {
+            if (response.data.logo){
+                $('.spinner-logo').remove()
+                $('#set-logo').html('<img class="navbar-brand-logo" src="'+response.data.logo.image+'" alt="Logo">')
+                document.title = response.data.logo.title ;
+                $('.set-logo-footer').html('<a class="w-100 mb-3 mb-lg-auto" href="{% url 'index' %}" aria-label="Front"> <img class="brand" src="'+response.data.logo.image+'" alt="Logo"> </a><br><p class="text-muted small mb-0">'+response.data.logo.title+'</p>')
+            }
+            if (response.data.treemenu){
+                $('.spinner-navbar').remove()
+                response.data.treemenu.forEach(fortree)
+                function fortree(value, index, array) {
+                    if (value.tree){
+                        $('.set-navbar').append('<li class="hs-has-mega-menu nav-item"> <a class="hs-mega-menu-invoker nav-link dropdown-toggle" href="#"id="megaMenuResponsiveMegaMenu'+value.name+'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'+value.name+'</a> <div class="hs-mega-menu dropdown-menu w-100 hs-mega-menu-desktop-md animated"aria-labelledby="megaMenuResponsiveMegaMenu'+value.name+'"style="animation-duration: 300ms; display: none;"> <div class="navbar-dropdown-menu-inner"> <div class="row"><div class="col-sm-6 col-md"> <ul class="nav  content'+value.id+'" role=""></ul> </div><div class="col-sm-6 col-md "><div class="tab-content nset'+value.id+'"> </div> </div> </div> </div> </div> </li>')
+                    }else{
+                        $('.set-navbar').append('<li class="nav-item"> <a class="nav-link active" href="'+value.link+'">'+value.name+'</a> </li>');
+                    }
+                }
+            }
+            if (response.data.menu){
+                response.data.menu.forEach(formenu)
+                 function formenu(value, index, array) {
+                    $('.content'+value.tree).append('<li style="width:100%"> <a class="dropdown-item" id="nav-one-eg1-tab"href=".set'+value.id+'" data-bs-toggle="pill"data-bs-target=".set-'+value.id+'" role="tab"aria-controls="nav-one-eg1"aria-selected="true">'+value.name+'</a> </li>');
+                    $('.nset'+value.tree).append('<div class="tab-pane fade set'+value.id+'" role="tabpanel" aria-labelledby="set'+value.id+'"> </div>')
+                }
+            }
+            if (response.data.submenu){
+                var count = 0;
+                var menu = '';
+                response.data.submenu.forEach(forsubmenu)
+                 function forsubmenu(value, index, array) {
+                    var b = `/product_grid/?filter="category__name":"${value.category}"`
+                    $('.set'+value.selectmenu).append('<a class="dropdown-item" id="set-link'+value.id+'" href="">'+value.category+'</a>');
+                    $('#set-link'+value.id).attr('href',b)
+
+                    if(count == 12){
+                        BreakException;
+                    }else if(count != 12 && $('.set'+value.selectmenu).length ){
+                         count += 1
+                    }
+                }
+            }
+            (function() {
+                    // INITIALIZATION OF MEGA MENU
+                    // =======================================================
+                    new HSMegaMenu('.js-mega-menu', {
+                        desktop: {
+                          position: 'left'
+                        }
+                      })
+                  })();
+            $('.nav > li > a').hover(function() {
+                var tt = $(this).attr('href');
+                $('.tab-pane').removeClass("active show" );
+                $(tt).addClass( "active show" );
+            });
+            console.log(response.data)
+        });
+    });
+</script>

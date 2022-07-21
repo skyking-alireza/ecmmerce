@@ -1,0 +1,234 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block customstyle %}
+    <link href="{% static 'assets/css/vendor/dataTables.bootstrap5.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/css/vendor/responsive.bootstrap5.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block mainform %}
+    <div class="content-page">
+                    <div class="content">
+
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mb-3"> سفارش شماره {{ data.id}}  </h4>
+
+                                        <div class="table-responsive">
+                                            <table class="table mb-0">
+                                                <thead class="table-light">
+                                                <tr>
+                                                    <th>ایتم ها</th>
+                                                    <th>تعداد</th>
+                                                    <th>قیمت</th>
+                                                    <th>مجموع</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for data in orders_data %}
+                                                    <tr>
+                                                    <td>{{ data.pro.name }} {{ data.price.color|default:'بدون رنگ' }} {{ data.price.details|default:'بدون مشخصات' }}</td>
+                                                    <td>{{ data.count }}</td>
+                                                    <td class="fa-price" data="{{ data.price.price }}" ></td>
+                                                    <td class="fa-price" data="{% widthratio data.count 1 data.price.price %}"></td>
+                                                </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- end table-responsive -->
+
+                                    </div>
+                                </div>
+                            </div> <!-- end col -->
+
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mb-3">مجموع هزینه ها</h4>
+
+                                        <div class="table-responsive">
+                                            <table class="table mb-0">
+                                                <thead class="table-light">
+                                                <tr>
+                                                    <th>توضیحات </th>
+                                                    <th>قیمت</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>هزینه محصول : </td>
+                                                    <td data="{{ data.amount }}" class="fa-price"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>هزینه ارسال : </td>
+                                                    <td data="50000" class="fa-price"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>هزینه بیمه کالا : </td>
+                                                    <td data="60000" class="fa-price"></td>
+                                                </tr>
+                                                <tr>
+                                                    <th>مجموع : </th>
+                                                    <th data="{{ data.amount }} + 50000 +60000" class="fa-price-sum"></th>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!-- end table-responsive -->
+
+                                    </div>
+                                </div>
+                            </div> <!-- end col -->
+                        </div>
+                        <!-- end row -->
+
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mb-3">اطلاعات خریدار</h4>
+
+                                        <h5>{{ data.user.get_full_name }}</h5>
+
+                                        <address class="mb-0 font-14 address-lg">
+                                            {{ data.user_address.description }}
+                                            <br>
+                                            <abbr title="شماره تماس گیرنده ">شماره تماس : </abbr> {{ data.user.phone_number }} <br>
+                                        </address>
+
+                                    </div>
+                                </div>
+                            </div> <!-- end col -->
+
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mb-3">اطلاعات خرید</h4>
+
+                                        <ul class="list-unstyled mb-0">
+                                            <li>
+                                                <p class="mb-2"><span class="fw-bold me-2">روش خرید :</span> درگاه پرداخت</p>
+                                                <p class="mb-2"><span class="fw-bold me-2">شماره کارت:</span>{{ data.card_number }}</p>
+                                                <p class="mb-2"><span class="fw-bold me-2">کد تراکنش :</span> {{ data.idpay_track_id }}</p>
+                                                <p class="mb-0"><span class="fw-bold me-2">تاریخ :</span> <p data="{{ data.date }}" class="fa-date"> </p></p>
+                                            </li>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                            </div> <!-- end col -->
+
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="header-title mb-3">اطلاعات ارسال</h4>
+
+                                        <div class="text-center">
+                                            <i class="mdi mdi-truck-fast h2 text-muted"></i>
+                                            <h5><b>پست پیشتاز</b></h5>
+                                            <p class="mb-1"><b>کد رهگیری :</b> xxxx235</p>
+                                            <p class="mb-0"><b>روش پرداخت :</b> COD</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> <!-- end col -->
+                        </div>
+                        <!-- end row -->
+
+                    </div> <!-- End Content -->
+
+                    <!-- Footer Start -->
+                    <footer class="footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <script>document.write(new Date().getFullYear())</script> © Hyper - Coderthemes.com
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="text-md-end footer-links d-none d-md-block">
+                                        <a href="javascript: void(0);">About</a>
+                                        <a href="javascript: void(0);">Support</a>
+                                        <a href="javascript: void(0);">Contact Us</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                    <!-- end Footer -->
+
+                </div> <!-- content-page -->
+        <!-- END Container -->
+{% endblock %}
+{% block customjs %}
+    <script src="/static/moment.js"></script>
+    <script src="{% static 'axios.min.js' %}"></script>
+    <script>
+        $('#change-status').change(function() {
+            axios.defaults.xsrfHeaderName = 'X_CSRFTOKEN';
+            axios.defaults.xsrfCookieName = 'csrftoken';
+            axios({
+                method : 'POST',
+                url : '{% url "change_payment_status" %}',
+                xsrfCookieName : "csrftoken",
+                xsrfHeaderName : "X-CSRFTOKEN",
+                data : {'status_id' : $(this).val()},
+                headers : {'X-CSRFTOKEN' : 'csrftoken'},
+            }).then((response) =>{
+                $('.data_td').remove();
+                var tablemain = $('#scroll-horizontal-datatable').DataTable();
+                tablemain.clear();
+                response.data.map(set_table_row);
+                function set_table_row(td) {
+                    tablemain.row.add([td.bank_track_id,new Intl.DateTimeFormat('fa-IR', {dateStyle: 'full', timeStyle: 'short'}).format(moment.unix(td.date)) ,set_status() ,new Intl.NumberFormat("fa").format(td.amount)+ " تومان " ]).draw(false);
+                };
+                function set_status(){
+                    if ($('#change-status').val() == 100){
+                        return '<h5><span class="badge badge-success-lighten"><i class="mdi mdi-bitcoin"></i>'+$( "#change-status option:selected" ).text()+'</span></h5>'
+                    }else if ($('#change-status').val() == 3){
+                        return '<h5><span class="badge badge-danger-lighten"><i class="mdi mdi-cancel"></i>'+$( "#change-status option:selected" ).text()+'</span></h5>'
+                    }else{
+                        return '<h5><span class="badge badge-warning-lighten"><i class="mdi mdi-timer-sand"></i>'+$( "#change-status option:selected" ).text()+'</span></h5>'
+                    }
+
+                }
+                });
+            });
+    </script>
+
+    <script>
+    $( document ).ready(function() {
+        $('.fa-date').map(function () {
+            $(this).html(new Intl.DateTimeFormat('fa-IR', {dateStyle: 'full', timeStyle: 'short'}).format(moment.unix($(this).attr('data'))));
+        });
+    });
+    $( document ).ready(function() {
+        $('.fa-price').map(function () {
+            $(this).html((new Intl.NumberFormat("fa").format($(this).attr('data')))+ " تومان ");
+        });
+    });
+    $( document ).ready(function() {
+        $('.fa-price-sum').map(function () {
+            $(this).html((new Intl.NumberFormat("fa").format(eval($(this).attr('data'))))+ " تومان ");
+        });
+    });
+    </script>
+    <!-- Datatables js -->
+    <script src="{% static 'assets/js/vendor/jquery.dataTables.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.bootstrap5.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.responsive.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/responsive.bootstrap5.min.js'%}"></script>
+
+    <!-- Datatable Init js -->
+    <script src="{% static 'assets/js/pages/demo.datatable-init.js'%}"></script>
+    <script>
+        $('#scroll-horizontal-datatable').DataTable();
+    </script>
+{% endblock %}

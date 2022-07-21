@@ -1,0 +1,61 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block customstyle %}
+    <link rel="stylesheet" href="{% static 'dropzone.css' %}">
+    <style>
+        input[data-switch]:checked+label:after{
+            right: 78px;
+        }
+        .form-control{
+            width: 50%;
+        }
+
+    </style>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 style="font-size: 20px" class="header-title">اپلود عکس </h1>
+                    <br>
+                    <br>
+                    <div class='content'>
+                        <form action="{% url 'images_upload' %}" enctype="multipart/form-data" class="dropzone" id="dropzonewidget">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+{% block customjs %}
+    <script src="{% static 'dropzone.js'%}"></script>
+    <script>
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    </script>
+{% endblock %}

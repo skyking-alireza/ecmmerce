@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+  <!-- Required Meta Tags Always Come First -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title>پروفایل کاربری</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="favicon.ico">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- CSS Implementing Plugins -->
+  <link rel="stylesheet" href="{% static 'main\assets\css\vendor.min.css' %}">
+  <link rel="stylesheet" href="{% static 'main\assets\vendor\bootstrap-icons\font\bootstrap-icons.css' %}">
+  <link href="{% static 'customize/main.css' %}" rel="stylesheet" type="text/css" id="light-style">
+  <link rel="stylesheet" href="{% static 'main\assets\css\theme.min.css' %}">
+  <style>
+      body{
+          font-family: IRANYekan,Inter,sans-serif
+        }
+      .col-md {
+            max-width: 200px;
+        }
+  </style>
+  {% block customstyle %}
+
+
+  {% endblock %}
+</head>
+
+<body>
+  <!-- ========== HEADER ========== -->
+  {% include 'main/header.html' %}
+
+  <!-- ========== END HEADER ========== -->
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main id="content" role="main" class="bg-light">
+    <!-- Breadcrumb -->
+    <div class="navbar-dark bg-dark" style="background-image: url(assets/svg/components/wave-pattern-light.svg);">
+      <div class="container content-space-1 content-space-b-lg-3">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="d-none d-lg-block">
+              <h1 class="h2 text-white">اطلاعات شخصی</h1>
+            </div>
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb breadcrumb-light mb-0">
+                <li class="breadcrumb-item">حساب</li>
+                <li class="breadcrumb-item active" aria-current="page">اطلاعات شخصی </li>
+              </ol>
+            </nav>
+            <!-- End Breadcrumb -->
+          </div>
+          <!-- End Col -->
+
+          <div class="col-auto">
+            <div class="d-none d-lg-block">
+              <a class="btn btn-soft-light btn-sm" href="{% url 'view_logout' %}">خروج از حساب</a>
+            </div>
+
+            <!-- Responsive Toggle Button -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarNav" aria-controls="sidebarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-default">
+                <i class="bi-list"></i>
+              </span>
+              <span class="navbar-toggler-toggled">
+                <i class="bi-x"></i>
+              </span>
+            </button>
+            <!-- End Responsive Toggle Button -->
+          </div>
+          <!-- End Col -->
+        </div>
+        <!-- End Row -->
+      </div>
+    </div>
+    <!-- End Breadcrumb -->
+
+    <!-- Content Section -->
+    <div class="container content-space-1 content-space-t-lg-0 content-space-b-lg-2 mt-lg-n10">
+      <div class="row">
+        <div class="col-lg-3">
+          <!-- Navbar -->
+          <div class="navbar-expand-lg navbar-light">
+            <div id="sidebarNav" class="collapse navbar-collapse navbar-vertical">
+              <!-- Card -->
+              <div class="card flex-grow-1 mb-5">
+                <div class="card-body">
+                  <!-- Avatar -->
+                  <div class="d-none d-lg-block text-center mb-5">
+                      <div class="avatar avatar-xxl avatar-circle mb-3">
+                          {% if user.image %}
+                              <img class="avatar-img" src="{{ user.image.url}}" alt="Image Description">
+                          {% else %}
+                              <img class="avatar-img" src="https://cdn0.iconfinder.com/data/icons/set-ui-app-android/32/8-512.png" alt="Image Description">
+                          {% endif %}
+                    </div>
+
+                    <h4 class="card-title mb-0">{{ user.get_full_name|default:'نامی ثبت نشده' }}</h4>
+                    <p class="card-text small">{{ user.email}}</p>
+                  </div>
+                  <!-- End Avatar -->
+
+                  <!-- Nav -->
+                  <span class="text-cap">حساب</span>
+
+                  <!-- List -->
+                  <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'profile' %}">
+                        <i class="bi-person-badge nav-icon"></i> اطلاعات شخصی
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'change_password' %}">
+                        <i class="bi-shield-shaded nav-icon"></i> امنیتی
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link " href="{% url 'address' %}">
+                        <i class="bi-geo-alt nav-icon"></i> آدرس
+                      </a>
+                    </li>
+                  </ul>
+                  <!-- End List -->
+
+                  <span class="text-cap">خرید</span>
+
+                  <!-- List -->
+                  <ul class="nav nav-sm nav-tabs nav-vertical mb-4">
+                    <li class="nav-item">
+                      <a class="nav-link " href="{% url 'orders' %}">
+                        <i class="bi-basket nav-icon"></i> سبد خرید
+                      </a>
+                    </li>
+                  </ul>
+                  <!-- End List -->
+
+
+
+                  <div class="d-lg-none">
+                    <div class="dropdown-divider"></div>
+
+                    <!-- List -->
+                    <ul class="nav nav-sm nav-tabs nav-vertical">
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">
+                          <i class="bi-box-arrow-right nav-icon"></i> Log out
+                        </a>
+                      </li>
+                    </ul>
+                    <!-- End List -->
+                  </div>
+                  <!-- End Nav -->
+                </div>
+              </div>
+              <!-- End Card -->
+            </div>
+          </div>
+          <!-- End Navbar -->
+        </div>
+        <!-- End Col -->
+        {% block main %}
+        {% endblock %}
+      </div>
+      <!-- End Row -->
+    </div>
+    <!-- End Content Section -->
+  </main>
+  <!-- ========== END MAIN CONTENT ========== -->
+
+  <!-- ========== FOOTER ========== -->
+    {% include 'main/footer.html' %}
+  {% include 'main/other.html' %}
+  <!-- ========== END FOOTER ========== -->
+{% block customjs %}
+  {% endblock %}
+  <!-- ========== SECONDARY CONTENTS ========== -->
+
+  <!-- Go To -->
+  <a class="js-go-to go-to position-fixed" href="javascript:;" style="visibility: hidden;" data-hs-go-to-options='{
+       "offsetTop": 700,
+       "position": {
+         "init": {
+           "right": "2rem"
+         },
+         "show": {
+           "bottom": "2rem"
+         },
+         "hide": {
+           "bottom": "-2rem"
+         }
+       }
+     }'>
+    <i class="bi-chevron-up"></i>
+  </a>
+  <!-- ========== END SECONDARY CONTENTS ========== -->
+
+  <script>
+      $(document).ready(function () {
+          $('a[href="'+window.location.pathname+'"]').each(function () {
+              $(this).attr('class','nav-link active');
+          });
+      })
+  </script>
+  <!-- JS Plugins Init. -->
+  <script>
+    (function() {
+      // INITIALIZATION OF HEADER
+      // =======================================================
+      new HSHeader('#header').init()
+
+
+      // INITIALIZATION OF MEGA MENU
+      // =======================================================
+      new HSMegaMenu('.js-mega-menu', {
+          desktop: {
+            position: 'left'
+          }
+        })
+
+
+      // INITIALIZATION OF SHOW ANIMATIONS
+      // =======================================================
+      new HSShowAnimation('.js-animation-link')
+
+
+      // INITIALIZATION OF BOOTSTRAP VALIDATION
+      // =======================================================
+      HSBsValidation.init('.js-validate', {
+        onSubmit: data => {
+          data.event.preventDefault()
+          alert('Submited')
+        }
+      })
+
+
+      // INITIALIZATION OF BOOTSTRAP DROPDOWN
+      // =======================================================
+      HSBsDropdown.init()
+
+
+      // INITIALIZATION OF GO TO
+      // =======================================================
+      new HSGoTo('.js-go-to')
+
+
+      // INITIALIZATION OF FILE ATTACH
+      // =======================================================
+      new HSFileAttach('.js-file-attach')
+
+
+      // INITIALIZATION OF ADD FIELD
+      // =======================================================
+      new HSAddField('.js-add-field', {
+        addedField: el => {
+          el.querySelectorAll('.js-select-dynamic').forEach(item => {
+            HSCore.components.HSTomSelect.init(item)
+          })
+
+          HSCore.components.HSMask.init('.js-input-mask-dynamic')
+        }
+      })
+
+
+      // INITIALIZATION OF INPUT MASK
+      // =======================================================
+      HSCore.components.HSMask.init('.js-input-mask')
+      {#HSCore.components.HSTomSelect.init('.js-select')#}
+      // INITIALIZATION OF QUILLJS EDITOR
+      // =======================================================
+      HSCore.components.HSQuill.init('.js-quill')
+
+
+      // INITIALIZATION OF SELECT
+      // =======================================================
+
+    })()
+  </script>
+</body>
+</html>

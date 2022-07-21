@@ -1,0 +1,114 @@
+﻿{% extends 'main/card-body.html' %}
+{% block main %}
+        <div class="col-lg-9">
+          <div class="d-grid gap-3 gap-lg-5">
+            <!-- Card -->
+            <div class="card">
+              <div class="card-header border-bottom">
+                <h4 class="card-header-title">اطلاعات پایه</h4>
+              </div>
+
+              <!-- Body -->
+              <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                  <!-- Form -->
+                  <div class="row mb-4">
+                    <label class="col-sm-3 col-form-label form-label">تصویر پروفایل</label>
+
+                    <div class="col-sm-9">
+                      <!-- Media -->
+                      <div class="d-flex align-items-center">
+                        <!-- Avatar -->
+                        <label class="avatar avatar-xl avatar-circle" for="avatarUploader">
+                            {% if user.image %}
+                                <img id="avatarImg" class="avatar-img" src="{{ user.image.url }}" alt="Image Description">
+                            {% endif %}
+                        </label>
+
+                        <div class="d-grid d-sm-flex gap-2 ms-4">
+                          <div class="form-attachment-btn btn btn-primary btn-sm">بارگذاری عکس
+                            <input type="file" class="js-file-attach form-attachment-btn-label" id="avatarUploader" data-hs-file-attach-options='{
+                                      "textTarget": "#avatarImg",
+                                      "mode": "image",
+                                      "targetAttr": "src",
+                                      "resetTarget": ".js-file-attach-reset-img",
+                                      "resetImg": "",
+                                      "allowTypes": [".png", ".jpeg", ".jpg"]
+                                   }'>
+                              {{ form.image }}
+                          </div>
+                          <!-- End Avatar -->
+
+                          <button type="button" class="js-file-attach-reset-img btn btn-white btn-sm">حذف</button>
+                        </div>
+                      </div>
+                      <!-- End Media -->
+                    </div>
+                  </div>
+                  <!-- End Form -->
+
+                  <!-- Form -->
+                  <div class="row mb-4">
+                    <label for="firstNameLabel" class="col-sm-3 col-form-label form-label">نام شما <i class="bi-question-circle text-body ms-1" data-bs-toggle="tooltip" data-bs-placement="top" title="نام شما در بخش کامنت ها نمایش داده می شود"></i></label>
+
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                          {{ form.first_name }}
+                          {{ form.last_name }}
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Form -->
+
+                  <!-- Form -->
+                  <div class="row mb-4">
+                    <label for="emailLabel" class="col-sm-3 col-form-label form-label">ایمیل</label>
+
+                    <div class="col-sm-9">
+                        {{ form.email }}
+                    </div>
+                  </div>
+                  <!-- End Form -->
+                  <!-- Form -->
+                  <div class="js-add-field row mb-4" data-hs-add-field-options='{
+                          "template": "#addPhoneFieldTemplate",
+                          "container": "#addPhoneFieldContainer",
+                          "defaultCreated": 0
+                        }'>
+                    <label for="phoneLabel" class="col-sm-3 col-form-label form-label">شماره تماس</label>
+
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                          {{ form.phone_number }}
+                      </div>
+                  </div>
+                  <!-- End Add Phone Input Field -->
+                  </div>
+                    <div class="card-footer pt-0">
+                        <div class="d-flex justify-content-end gap-3">
+                          <a class="btn btn-white" href="{% url 'index' %}">صفحه اصلی</a>
+                         <input class="btn btn-primary" type="submit" value="ذخیره اطلاعات">
+                        </div>
+                      </div>
+                </form>
+              </div>
+              <!-- End Body -->
+
+              <!-- Footer -->
+                {% if  form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div style="text-align: right" class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>خطا </strong> {{ error }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+              <!-- End Footer -->
+            </div>
+            <!-- End Card -->
+          </div>
+        </div>
+{% endblock %}

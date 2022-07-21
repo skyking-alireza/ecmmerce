@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+    <head>
+        <meta charset="utf-8">
+        <title>
+            {% block title %}
+            {% endblock %}
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet" type="text/css">
+        <link href="{% static 'assets/css/app-modern-rtl.min.css' %}" rel="stylesheet" type="text/css" id="light-style">
+        <link href="{% static 'customize/main.css' %}" rel="stylesheet" type="text/css" id="light-style">
+        <link rel="stylesheet" href="{% static 'dropzone.css' %}">
+        <style>
+        .lazyload{
+            object-fit: cover;
+            min-width: 120px;
+            min-height: 120px;
+            max-width: 150px;
+            max-height: 150px;
+            margin: 10px auto 10px 10px;
+            cursor: pointer;
+            border-radius: 25%;
+            overflow: hidden;
+        }
+        .img-active{
+            padding: 5px;
+            border : #2980B9 4px dotted;
+        }
+    </style>
+    </head>
+
+<body class="show" data-layout="detached" style="font-family: IRANYekan,Inter,sans-serif" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": true}'>
+
+<div class="tab-content">
+<script src="{% static 'lazyload.js'%}"></script>
+        {% if datas %}
+            <div class="row">
+                {% for data in datas %}
+                    <img data-src="{{ data.image.url }}" data-bs-toggle="modal" id="{{ data.id }}" data-bs-target="#image{{ data.id }}" class="lazyload {{ data.id }}" alt="{{ data.alt }}">
+                {% endfor %}
+            </div>
+        {% else %}
+            <br>
+            <br>
+            <br>
+            <div class="row" style="text-align: center">
+                <div class="alert alert-warning bg-white text-warning" role="alert">
+                    <strong>موردی یافت نشد !</strong>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+<script src="{% static '\assets\js\vendor.min.js'%}"></script>
+<script src="{% static '\assets\js\app.min.js'%}"></script>
+<script src="{% static 'jquery-3.6.0.min.js'%}"></script>
+    <script>
+    let lazy = lazyload();
+    lazyload();
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    $('.lazyload').click(function (){
+        $(this).addClass('img-active').siblings().removeClass('img-active')
+        var url = new URL(window.location.href);
+        var run = url.searchParams.get('id');
+        eval(run);
+        {#parent.$("#foo").attr("src", '/media/gallery/img6_Ko54dnI.jpg');#}
+        {#parent.$("#foo").removeClass('none');#}
+    });
+    </script>
+<script src="{% static '\assets\js\vendor\handlebars.min.js'%}"></script>
+<script src="{% static '\assets\js\vendor\typeahead.bundle.min.js'%}"></script>
+
+        <!-- Demo -->
+<script src="{% static '\assets\js\pages\demo.typehead.js'%}"></script>
+
+        <!-- Timepicker -->
+<script src="{% static '\assets\js\pages\demo.timepicker.js'%}"></script>
+</body>
+</html>

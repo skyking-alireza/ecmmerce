@@ -1,0 +1,175 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block customstyle %}
+    <style>
+        .form-control{
+            width: 50%;
+        }
+        .lazyload{
+            object-fit: cover;
+            min-width: 120px;
+            min-height: 120px;
+            max-width: 150px;
+            max-height: 150px;
+            margin: 10px auto 10px 10px;
+            cursor: pointer;
+            border-radius: 25%;
+            overflow: hidden;
+            transition: .7s;
+        }
+        .lazyload:hover{
+            filter: blur(3px);
+            transition: .7s;
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <script src="{% static 'lazyload.js'%}"></script>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body" data-simplebar style="max-height: 600px;">
+                    <h1 style="font-size: 20px" class="header-title">عکس ها </h1>
+                    <br>
+                    <br>
+                    {% if datas %}
+                        <div class="row">
+                        {% for data in datas %}
+                            <img data-src="{{ data.image.url }}" data-bs-toggle="modal" data="{{ data.id }}" class="lazyload {{ data.id }}" alt="{{ data.alt }}">
+                        {% endfor %}
+                        </div>
+                    {% else %}
+                        <br>
+                        <br>
+                        <br>
+                    <div class="row" style="text-align: center">
+                        <div class="alert alert-warning bg-white text-warning" role="alert">
+                            <strong>موردی یافت نشد !</strong>
+                        </div>
+                    </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+{% block tables %}
+{% endblock %}
+{% block modal %}
+    <div id="" class="modal fade modal-set" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <form class="ps-3 pe-3" method="post">
+                                {% csrf_token %}
+                                <div style="margin: auto" class="mb-3">
+                                    <img id="image-modal-set" src="" alt="image" class="img-fluid rounded" width="auto"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="example-color" class="form-label">عنوان</label>
+                                    <input style="width: 100%" class="form-control" id="title-modal"  type="text" name="alt" value="">
+                                </div>
+                                <div class="mb-3 text-center">
+                                    <button class="btn btn-primary" id="setdata" data="" type="submit">بروزرسانی اطلاعات</button>
+                                    <button class="btn btn-success" id="copydata" >کپی پیوند</button>
+                                    <button type="button" data-bs-toggle="modal" data="" class="btn btn-danger">حذف</button>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div>
+            <div id="" class="modal fade delimage" tabindex="-1" role="dialog" aria-labelledby="fill-danger-modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content modal-filled bg-danger">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="fill-danger-modalLabel">حذف آیتم</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                        </div>
+                        <div class="modal-body">
+                            آیا از حذف این عکس اطمینان دارید
+                        </div>
+                        <div class="modal-footer">
+                            <form method="post">
+                                {% csrf_token %}
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">بازگشت</button>
+                                <button type="submit" data="" class="btn btn-outline-light">حذف آیتم</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+{% block customjs %}
+    <script src="{% static 'axios.min.js' %}"></script>
+    <script>
+    $('.lazyload').click(function () {
+        $('#image-modal-set').attr('src',$(this).attr('src'));
+        $('.modal-set').attr('id', 'image'+$(this).attr('data'));
+        $('#title-modal').addClass($(this).attr('data'));
+        $('#title-modal').attr('value',$(this).attr('alt'));
+        $('#setdata').attr('data',$(this).attr('data'));
+        $('.btn-danger').attr('data',$(this).attr('data'));
+        $('.modal-set').modal('show');
+    });
+    $('.btn-danger').click(function () {
+        $('.delimage').attr('id' , 'delimage'+$(this).attr('data'));
+        $('.btn-outline-light').attr('data' , $(this).attr('data'));
+        $('.delimage').modal('show');
+    });
+    $('#copydata').click(function (e) {
+        e.preventDefault();
+        const elem = document.getElementById('image-modal-set');
+        navigator.clipboard.writeText(elem.src);
+    });
+    </script>
+    <script>
+    let lazy = lazyload();
+    lazyload();
+    $('.btn-primary').click(function (e) {
+        e.preventDefault();
+        var data = new FormData();
+        data.append('imageid' , $(this).attr('data'));
+        data.append('csrfmiddlewaretoken' , '{{ csrf_token }}');
+        data.append('alt' , $('#title-modal').val());
+        $.ajax({
+            method : 'POST',
+            url : '{% url "update_images" %}',
+            processData : false,
+            contentType : false,
+            data : data,
+            success : function (res){
+                console.log(res)
+            }
+        });
+        $('#image'+ $(this).attr('data')).modal('hide');
+    });
+    $('.btn-outline-light').click(function (e) {
+        e.preventDefault();
+        var data = new FormData();
+        data.append('imageid' , $(this).attr('data'));
+        data.append('csrfmiddlewaretoken' , '{{ csrf_token }}');
+        $.ajax({
+            method : 'POST',
+            url : '{% url "del_images" %}',
+            processData : false,
+            contentType : false,
+            data : data,
+            success : function (res){
+                console.log(res)
+            }
+        });
+        $('#delimage'+ $(this).attr('data')).modal('hide');
+        $('img.'+$(this).attr('data')).remove();
+    });
+    </script>
+{% endblock %}

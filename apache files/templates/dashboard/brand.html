@@ -1,0 +1,213 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block customstyle %}
+    <style>
+        input[data-switch]:checked+label:after{
+            right: 78px;
+        }
+        .form-control{
+            width: 50%;
+        }
+        .none{
+            display: none;
+        }
+        .mdi{
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .lazyload{
+            object-fit: cover;
+            min-width: 120px;
+            min-height: 120px;
+            max-width: 150px;
+            max-height: 150px;
+            margin: 10px auto 10px 10px;
+            cursor: pointer;
+            border-radius: 25%;
+            overflow: hidden;
+        }
+        .img-active {
+            padding: 5px;
+            border: #2980B9 4px dotted;
+        }
+        .lazyload:hover{
+            filter: blur(3px);
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <script src="{% static 'lazyload.js'%}"></script>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 style="font-size: 20px" class="header-title">برندها</h1>
+                    <br>
+                    <br>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="id_data" id="id-data">
+                        <div class="mb-3">
+                            <label class="form-label">عنوان</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.showindexpage }}
+                            <label class="form-check-label" for="switchmain">نمایش در صفحه اصلی</label>
+                        </div>
+                        <div class="mb-3">
+                            <div class="row" style="max-height: 500px;overflow-y: auto" >
+                            <label class="form-label">انتخاب عکس</label>
+                            {{ form.image }}
+                            <br>
+                            {% if select_images %}
+                                {% for image in select_images %}
+                                    <img data-src="{{ image.image.url }}" data="{{ image.id }}" class="lazyload {{ image.id }}" alt="{{ image.alt }}">
+                                {% endfor %}
+                                {% else %}
+                                <div class="alert alert-warning bg-white text-warning" role="alert">
+                                    <strong>موردی یافت نشد !</strong>
+                                </div>
+                            {% endif %}
+                        </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">توضیحات</label>
+                            {{ form.descriptions }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">کلمات کلیدی</label>
+                            {{ form.keywords }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">تگ های سئو</label>
+                            {{ form.tags }}
+                        </div>
+                        <p type="submit" class="btn btn-primary">ثبت اطلاعات</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+
+{% block tables %}
+    {% if datas %}
+        <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+            <thead>
+            <tr>
+                <th>نام دسته بندی</th>
+                <th>کلمات کلیدی</th>
+                <th>تگ های سئو</th>
+                <th>ویرایش</th>
+                <th>حذف</th>
+            </tr>
+            </thead>
+            <tbody >
+            {% for data in datas %}
+                <tr>
+                    <td id="name{{ data.id}}">{{ data }}</td>
+                    <td id="keywords{{ data.id}}">{{ data.keywords }}</td>
+                    <td id="tags{{ data.id}}">{{ data.tags }}</td>
+                    <td><i data="{{ data.id}}" name="{{ data }}" showindexpage="{{ data.showindexpage}}" image="{{ data.image.id}}" descriptions="{{ data.descriptions}}" keywords="{{ data.keywords}}" tags="{{ data.tags}}"  class="mdi mdi-file-edit"></i></td>
+                    <td><i data="{{ data.id}}" class="mdi mdi-delete"></i></td>
+
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    {% else %}
+        <br>
+            <br>
+            <br>
+        <div class="row" style="text-align: center">
+
+            <div class="alert alert-warning bg-white text-warning" role="alert">
+                <strong>موردی یافت نشد !</strong>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block customjs %}
+    <script src="{% static 'axios.min.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/jquery.dataTables.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.bootstrap5.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/dataTables.responsive.min.js'%}"></script>
+    <script src="{% static 'assets/js/vendor/responsive.bootstrap5.min.js'%}"></script>
+
+    <!-- Datatable Init js -->
+    <script src="{% static 'assets/js/pages/demo.datatable-init.js'%}"></script>
+    <script>
+        let lazy = lazyload();
+        lazyload();
+        var table = $('#basic-datatable').DataTable();
+        $('.lazyload').click(function () {
+            $('#id_image').val($(this).attr('data'));
+            $(this).addClass('img-active').siblings().removeClass('img-active');
+        });
+        $('.mdi-file-edit').click(function () {
+            $('#id-data').val($(this).attr('data'));
+            $('#id_name').val($(this).attr('name'));
+            document.getElementById('switchmain').checked = $(this).attr('showindexpage');
+            $('#id_image').val($(this).attr('image'));
+            $('.'+$(this).attr('image')).addClass('img-active').siblings().removeClass('img-active');
+            $('#id_descriptions').val($(this).attr('descriptions'));
+            $('#id_keywords').val($(this).attr('keywords'));
+            $('#id_tags').val($(this).attr('tags'));
+        });
+        $('.mdi-delete').click(function () {
+            axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+            axios.defaults.xsrfCookieName = "csrftoken";
+            axios({
+                method : "POST",
+                xsrfCookieName : 'csrftoken',
+                xsrfHeaderName : 'X-CSRFTOKEN',
+                data : {id : $(this).attr('data')},
+                url :'{% url "deletebrand"  %}',
+                headers : {
+                    'X-CSRFTOKEN' : 'csrftoken'
+                }
+            }).then((response) => {
+                if (response.data.text == 'ok'){
+                    table.row( $(this).parents('tr') ).remove().draw();
+                }else {
+                    alert('متاسفانه مقدار حذف نشد');
+                }
+            });
+        });
+        $('.btn-primary').click(function () {
+            axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+            axios.defaults.xsrfCookieName = "csrftoken";
+            axios({
+                method : "POST",
+                xsrfCookieName : 'csrftoken',
+                xsrfHeaderName : 'X-CSRFTOKEN',
+                data : {id : $('#id-data').val(), name : $('#id_name').val(), image : $('#id_image').val(), showindexpage :  document.getElementById('switchmain').checked, descriptions : $('#id_descriptions').val(), keywords : $('#id_keywords').val(), tags : $('#id_tags').val()},
+                url :'{% url "setbrand"  %}',
+                headers : {
+                    'X-CSRFTOKEN' : 'csrftoken'
+                }
+            }).then((response) => {
+                if (response.data.text == 'bad'){
+                    alert('متاسفانه مقدار اضافه نشد');
+                }else {
+                    if (response.data.id){
+                        $('#name'+response.data.id).html($('#id_name').val())
+                        $('#keywords'+response.data.id).html($('#id_keywords').val())
+                        $('#tags'+response.data.id).html($('#id_tags').val())
+                    }else {
+                        table.row.add(['<td id="name'+response.data.idv+'">'+$('#id_name').val()+'</td>','<td id="keywords'+$('#id_keywords').val()+'">'+$('#id_keywords').val()+'</td>','<td id="tags'+$('#id_tags').val()+'">'+$('#id_tags').val()+'</td>', '<i data="'+response.data.idv+'" name="'+$('#id_name').val()+'" showindexpage="'+$('#id_showindexpage').val()+'" image="'+$('#id_image').val()+'" descriptions="'+$('#id_descriptions').val()+'" keywords="'+$('#id_keywords').val()+'" tags="'+$('#id_tags').val()+'"  class="mdi mdi-file-edit"></i>','<i data="'+response.data.idv+'" class="mdi mdi-delete"></i>']).draw();
+                    }
+                }
+            });
+        });
+    </script>
+
+{% endblock %}

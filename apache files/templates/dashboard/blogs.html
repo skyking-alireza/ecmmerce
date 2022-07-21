@@ -1,0 +1,179 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block customstyle %}
+    <link href="{% static 'image-picker.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        input[data-switch]:checked+label:after{
+            right: 78px;
+        }
+        .form-control{
+            width: 50%;
+        }
+        .none{
+            display: none;
+        }
+        .lazyload{
+            object-fit: cover;
+            min-width: 120px;
+            min-height: 120px;
+            max-width: 150px;
+            max-height: 150px;
+            margin: 10px auto 10px 10px;
+            cursor: pointer;
+            border-radius: 25%;
+            overflow: hidden;
+        }
+        .img-active {
+            padding: 5px;
+            border: #2980B9 4px dotted;
+        }
+        .lazyload:hover{
+            filter: blur(3px);
+        }
+    </style>
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <script src="{% static 'lazyload.js'%}"></script>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 style="font-size: 20px" class="header-title">وبلاگ </h1>
+                    <br>
+                    <br>
+                    <form method="post" id="form-blog">
+                        {% csrf_token %}
+                        {{ form.media }}
+                        <div class="mb-3">
+                            <label class="form-label">عنوان</label>
+                            {{ form.title }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">دسته بندی</label>
+                            {{ form.category }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">آدرس</label>
+                            {{ form.url }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">توضیحات سئو</label>
+                            {{ form.description_seo }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">تگ های سئو</label>
+                            {{ form.tags_seo }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">کلمات کلیدی سئو</label>
+                            {{ form.keywords_seo }}
+                        </div>
+                        <div class="row" style="max-height: 500px;overflow-y: auto" >
+                            <label class="form-label">انتخاب عکس</label>
+                            {{ form.image }}
+                            <br>
+                            {% if select_images %}
+                                {% for image in select_images %}
+                                    <img data-src="{{ image.image.url }}" data="{{ image.id }}" class="lazyload {{ image.id }}" alt="{{ image.alt }}">
+                                {% endfor %}
+                                {% else %}
+                                <div class="alert alert-warning bg-white text-warning" role="alert">
+                                    <strong>موردی یافت نشد !</strong>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.text }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">ثبت اطلاعات</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+{% block formerrors %}
+    {% if  form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div style="text-align: right" class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>خطا </strong> {{ error }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+{% block tables %}
+                {% if datas %}
+                    <table id="fixed-columns-datatable" class="table nowrap row-border order-column w-100">
+                            <thead>
+                                <tr>
+                                    <th>عنوان</th>
+                                    <th>کلمات کلیدی</th>
+                                    <th>ویرایش</th>
+                                    <th>حذف</th>
+                                    <th>نمایش</th>
+                                </tr>
+                            </thead>
+                    <tbody>
+                    {% for data in datas %}
+                                <tr>
+                                    <td>{{ data.title }}</td>
+                                    <td>{{ data.keywords_seo }}</td>
+                                    <td><a style="font-size: 20px" data="{{ data.id }}" class="set-update"><i class="mdi mdi-file-edit"></i></a></td>
+                                    <td><a style="font-size: 20px" href="{{ data.deleteitem }}"><i class="mdi mdi-delete"></i></a></td>
+                                    <td><a style="font-size: 20px" href="{{ data.get_absolute_url }}"><i class="mdi mdi-eye"></i></a></td>
+                                </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                        <br>
+                        <br>
+                        <br>
+                        <div class="row" style="text-align: center">
+                            <div class="alert alert-warning bg-white text-warning" role="alert">
+                                <strong>موردی یافت نشد !</strong>
+                            </div>
+                        </div>
+                {% endif %}
+{% endblock %}
+{% block customjs %}
+    <script src="{% static 'axios.min.js' %}"></script>
+    <script>
+    let lazy = lazyload();
+    lazyload();
+    $('.lazyload').click(function () {
+        $('#id_image').val($(this).attr('data'));
+        $(this).addClass('img-active').siblings().removeClass('img-active');
+    });
+    $('.set-update').click(function () {
+        axios({
+            method : "GET",
+            url : '{% url "update_blogs"  %}?data=' + $(this).attr('data'),
+        }).then((response) => {
+            $('#id_title').val((response.data.text).title);
+            $('#id_url').val((response.data.text).url);
+            $('#id_description_seo').val((response.data.text).description_seo);
+            $('#id_keywords_seo').val((response.data.text).keywords_seo);
+            $('#id_tags_seo').val((response.data.text).tags_seo);
+            $('#id_image').val((response.data.text).image);
+            $('#id_category').val((response.data.text).category);
+            $('.'+(response.data.text).image).addClass('img-active').siblings().removeClass('img-active');
+            tinyMCE.get('tinymce').setContent((response.data.text).text);
+            $('<input>').attr({
+                type: 'hidden',
+                value: (response.data.text).id,
+                name: 'blog-id',
+            }).appendTo('#form-blog');
+        });
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,464 @@
+{% load static %}
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <!-- Header -->
+        <div class="modal-close">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!-- End Header -->
+
+        <!-- Body -->
+        <div class="modal-body">
+          <!-- Log in -->
+          <div id="signupModalFormLogin" style="display: none; opacity: 0;">
+            <!-- Heading -->
+            <div class="text-center mb-7">
+              <h2>ورود</h2>
+              <p>در وب سایت حساب کاربردی ندارید ؟
+                <a class="js-animation-link link" href="javascript:;" role="button" data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormSignup",
+                         "groupName": "idForm"
+                       }'>ساخت حساب کاربری</a>
+              </p>
+            </div>
+            <!-- End Heading -->
+
+            <div class="d-grid gap-2">
+              <a class="js-animation-link btn btn-primary btn-lg" href="#" data-hs-show-animation-options='{
+                       "targetSelector": "#signupModalFormLoginWithEmail",
+                       "groupName": "idForm"
+                     }'>برای ورود به حساب کلیک کنید</a>
+            </div>
+          </div>
+          <!-- End Log in -->
+
+          <!-- Log in with Modal -->
+          <div id="signupModalFormLoginWithEmail" style="display: none; opacity: 0;">
+            <!-- Heading -->
+            <div class="text-center mb-7">
+              <h2>ساخت حساب کاربری</h2>
+              <p>در وب سایت حساب کاربردی ندارید ؟
+                <a class="js-animation-link link" href="javascript:;" role="button" data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormSignup",
+                         "groupName": "idForm"
+                       }'>ساخت حساب کاربری در سایت</a>
+              </p>
+            </div>
+            <!-- End Heading -->
+
+            <form method="post" action="{% url 'view_login' %}" class="js-validate needs-validation" novalidate="">
+                {% csrf_token %}
+              <!-- Form -->
+              <div class="mb-3">
+                <label class="form-label" for="signupModalFormLoginEmail">ایمیل</label>
+                <input type="email" id="login_email" class="form-control form-control-lg" name="email" id="signupModalFormLoginEmail" placeholder="email@site.com" aria-label="email@site.com" required="">
+                <span class="invalid-feedback">لطفا یک ایمیل معتبر وارد کنید</span>
+              </div>
+              <!-- End Form -->
+
+              <!-- Form -->
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="form-label" for="signupModalFormLoginPassword">رمز عبور</label>
+
+                  <a class="js-animation-link form-label-link" href="javascript:;" data-hs-show-animation-options='{
+                       "targetSelector": "#signupModalFormResetPassword",
+                       "groupName": "idForm"
+                     }'>پسورد خود را فراموش کرده اید ؟</a>
+                </div>
+
+                <input type="password" id="login_password" class="form-control form-control-lg" name="password" id="signupModalFormLoginPassword" placeholder="حداقل طول پسورد 8 کارکتر" aria-label="8+ characters required" required="" minlength="8">
+                <span class="invalid-feedback">لطفا یک پسورد معتبر وارد کنید</span>
+              </div>
+              <!-- End Form -->
+
+              <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary form-control-lg">ورود</button>
+              </div>
+            </form>
+          </div>
+          <!-- End Log in with Modal -->
+
+          <!-- Sign up -->
+          <div id="signupModalFormSignup">
+            <!-- Heading -->
+            <div class="text-center mb-7">
+              <h2>ساخت حساب کاربری</h2>
+              <p>یک حساب کاربری دارید ؟
+                <a class="js-animation-link link" href="javascript:;" role="button" data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormLogin",
+                         "groupName": "idForm"
+                       }'>برای ورود کلیک کنید</a>
+              </p>
+            </div>
+            <!-- End Heading -->
+
+            <div class="d-grid gap-3">
+
+              <a class="js-animation-link btn btn-primary btn-lg" href="#" data-hs-show-animation-options='{
+                       "targetSelector": "#signupModalFormSignupWithEmail",
+                       "groupName": "idForm"
+                     }'>برای ساخت حساب کاربری کلیک کنید</a>
+
+            </div>
+          </div>
+          <!-- End Sign up -->
+
+          <!-- Sign up with Modal -->
+          <div id="signupModalFormSignupWithEmail" style="display: none; opacity: 0;">
+            <!-- Heading -->
+            <div class="text-center mb-7">
+              <h2>ایجاد حساب</h2>
+              <p>یک حساب کاربری دارید ؟
+                <a class="js-animation-link link" href="javascript:;" role="button" data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormLogin",
+                         "groupName": "idForm"
+                       }'>برای ورود کلیک کنید</a>
+              </p>
+            </div>
+            <!-- End Heading -->
+
+            <form method="post" action="{% url 'create_account' %}" class="js-validate need-validate" novalidate="">
+                {% csrf_token %}
+              <!-- Form -->
+              <div class="mb-3">
+                <label class="form-label" for="signupModalFormSignupEmail">ایمیل</label>
+                  {{ customers.email }}
+                <span class="invalid-feedback">لطفا یک ایمیل معتبر وارد کنید .</span>
+              </div>
+              <!-- End Form -->
+                <div class="mb-3">
+                    <label class="form-label" for="phoneLabel">شماره تماس</label>
+                    {{ customers.phone_number }}
+                    <span class="invalid-feedback">لطفا یک شماره معتبر وارد کنید .</span>
+                    <br>
+                    <p style="font-size: 13px;cursor: pointer" id="send_code">ارسال کد</p>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="phoneLabel">شماره تماس</label>
+                    <input type="number" class="form-control form-control-lg" name="otp" id="signupModalFormSignupPassword" required="">
+                    <span class="invalid-feedback">لطفا کد تایید را وارد کنید .</span>
+                    <br>
+                    <p style="font-size: 13px;cursor: pointer" id="send_code">ارسال کد</p>
+                </div>
+              <!-- Form -->
+              <div class="mb-3">
+                <label class="form-label" for="signupModalFormSignupPassword">رمز عبور</label>
+                <input type="password" class="form-control form-control-lg" name="password" id="signupModalFormSignupPassword" placeholder="حداقل طول پسورد 8 کارکتر" aria-label="حداقل طول پسورد 8 کارکتر" required="">
+                <span class="invalid-feedback">رمز عبور شما نامعتبر است . دوباره تلاش کنید.</span>
+              </div>
+              <!-- End Form -->
+
+              <!-- Form -->
+              <div class="mb-3" data-hs-validation-validate-class="">
+                <label class="form-label" for="signupModalFormSignupConfirmPassword">تکرار رمز عبور</label>
+                <input type="password" class="form-control form-control-lg" name="confirmPassword" id="signupModalFormSignupConfirmPassword" placeholder="حداقل طول پسورد 8 کارکتر" aria-label="8+ characters required" required="" data-hs-validation-equal-field="#signupModalFormSignupPassword">
+                <span class="invalid-feedback">رمز عبور شما یکسان نیست .</span>
+              </div>
+              <!-- End Form -->
+
+              <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary form-control-lg">ثبت اطلاعات</button>
+              </div>
+            </form>
+          </div>
+          <!-- End Sign up with Modal -->
+
+          <!-- Reset Password -->
+          <div id="signupModalFormResetPassword" style="display: none; opacity: 0;">
+            <!-- Heading -->
+            <div class="text-center mb-7">
+              <h2>فراموشی پسورد ؟ </h2>
+              <p>شماره تماسی که هنگام عضویت آنرا ثبت کردید را وارد کنید تا پسورد جدید برای شما ارسال گردد.</p>
+            </div>
+            <!-- En dHeading -->
+
+            <form class="js-validate need-validate" novalidate="">
+              <div class="mb-3">
+                <!-- Form -->
+                <div class="d-flex justify-content-between align-items-center">
+                  <label class="form-label" for="signupModalFormResetPasswordEmail" tabindex="0">شماره تماس شما</label>
+
+                  <a class="js-animation-link form-label-link" href="javascript:;" data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormLogin",
+                         "groupName": "idForm"
+                       }'>
+                    <i class="bi-chevron-left small"></i> بازگشت به ورود
+                  </a>
+                </div>
+                <input type="text" class="js-input-mask form-control" id="getdata" placeholder="9901234567" data-hs-mask-options='{"mask": "0000000000"}'>
+                <!-- End Form -->
+              </div>
+
+              <div class="d-grid">
+                <p class="btn btn-primary form-control-lg code-reset-password">ارسال کد</p>
+              </div>
+            </form>
+          </div>
+          <!-- End Reset Password -->
+        </div>
+        <!-- End Body -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Go To -->
+  <a class="js-go-to go-to position-fixed" href="javascript:;" style="visibility: hidden;" data-hs-go-to-options='{
+       "offsetTop": 700,
+       "position": {
+         "init": {
+           "right": "2rem"
+         },
+         "show": {
+           "bottom": "2rem"
+         },
+         "hide": {
+           "bottom": "-2rem"
+         }
+       }
+     }'>
+    <i class="bi-chevron-up"></i>
+  </a>
+
+  <!-- Offcanvas Search -->
+  <div class="offcanvas offcanvas-top offcanvas-navbar-search bg-light" tabindex="-1" id="offcanvasNavbarSearch">
+    <div class="offcanvas-body">
+      <div class="container">
+        <div class="w-lg-75 mx-lg-auto">
+          <div class="d-flex justify-content-end mb-3">
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+
+          <div class="mb-7">
+            <!-- Form -->
+            <form>
+              <!-- Input Card -->
+              <div class="input-card">
+                <div class="input-card-form">
+                  <input type="text" id="search" class="form-control form-control-lg" placeholder="جستجو" aria-label="Search Front">
+                </div>
+                <a href="#" id="set-link-search" type="button" class="btn btn-primary btn-lg">نمایش بیشتر</a>
+              </div>
+              <!-- End Input Card -->
+            </form>
+            <!-- End Form -->
+          </div>
+
+          <div class="d-none d-md-block" id="set-search-data" style="display: flex!important;">
+            <!-- End Row -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offcanvas Search -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbarEmptyShoppingCart">
+    <div class="offcanvas-header justify-content-end border-0 pb-0">
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+  </div>
+  <!-- ========== END SECONDARY CONTENTS ========== -->
+
+
+  <!-- JS Implementing Plugins -->
+  <script src="{% static 'jquery-3.6.0.min.js' %}"></script>
+  <script src="{% static 'axios.min.js' %}"></script>
+  <script src="{% static 'main\assets\vendor\aos\dist\aos.js' %}"></script>
+  <script>
+      $('#send_code').click(function () {
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+        axios.defaults.xsrfCookieName = "csrftoken";
+        axios({
+            method : "POST",
+            url : "{% url 'return_code' %}",
+            xsrfCookieName : 'csrftoken',
+            xsrfHeaderName : 'X-CSRFTOKEN',
+            data : {number_phone : $('#id_phone_number').val()},
+            headers : {
+                'X-CSRFTOKEN' : 'csrftoken'
+            }
+        }).then((response) => {
+            alert(response.data.text);
+        })
+      });
+      function return_image(id) {
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+        axios.defaults.xsrfCookieName = "csrftoken";
+        axios({
+            method : "POST",
+            url : "{% url 'findimage' %}",
+            xsrfCookieName : 'csrftoken',
+            xsrfHeaderName : 'X-CSRFTOKEN',
+            data : {text : id},
+            headers : {
+                'X-CSRFTOKEN' : 'csrftoken'
+            }
+        }).then((response) => {
+            if (response.data.url){
+                $('#set-image'+String(id)).attr('src',response.data.url);
+            }
+        })
+      }
+      $('#search').keydown(function () {
+        $('#set-link-search').attr('href','/product_grid/?filter="name__icontains":"'+$(this).val()+'"');
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+        axios.defaults.xsrfCookieName = "csrftoken";
+        axios({
+            method : "POST",
+            url : "{% url 'search' %}",
+            xsrfCookieName : 'csrftoken',
+            xsrfHeaderName : 'X-CSRFTOKEN',
+            data : {text : $(this).val()},
+            headers : {
+                'X-CSRFTOKEN' : 'csrftoken'
+            }
+        }).then((response) => {
+            if (response.data.text != false){
+                    $('#set-search-data').html('')
+                    response.data.text.forEach(search)
+                    function search(value, index, array) {
+                        $('#set-search-data').append('<div class="col mb-4"><a class="card card-sm card-transition h-100" href="product/'+value.id+'/'+value.name+'" data-aos="fade-up"><img class="card-img p-2" id="set-image'+value.image+'" src="" alt="Image Description"><div class="card-body"><h4 class="card-title text-inherit">'+value.category[0]+'</h4><p class="card-text small text-body">'+value.name+'</p></div></a></div><li>')
+                        return_image(value.image);
+                    }
+            }
+            console.log(response.data.text);
+        })
+      });
+      $('.code-reset-password').click(function () {
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+        axios.defaults.xsrfCookieName = "csrftoken";
+        axios({
+            method : "POST",
+            url : "{% url 'reset_code' %}",
+            xsrfCookieName : 'csrftoken',
+            xsrfHeaderName : 'X-CSRFTOKEN',
+            data : {number_phone : $('#getdata').val()},
+            headers : {
+                'X-CSRFTOKEN' : 'csrftoken'
+            }
+        }).then((response) => {
+            if (response.data.text != 'چنین شماره ای ثبت نشده است'){
+                window.location.replace("view_reset_passwd");
+            }else {
+                alert('چنین شماره ای ثبت نشده است')
+            }
+        })
+      });
+
+	$('.nav > li > a').hover(function() {
+      var tt = $(this).attr('href');
+      $('.tab-pane').removeClass("active show" );
+      $(tt).addClass( "active show" );
+	  {#$(this).tab('show');#}
+	});
+  </script>
+  <script src="{% static 'main\assets\js\vendor.min.js' %}"></script>
+  <!-- JS Front -->
+  <script src="{% static 'main\assets\js\theme.min.js' %}"></script>
+
+  <!-- JS Plugins Init. -->
+  <script>
+    (function() {
+      // INITIALIZATION OF MEGA MENU
+      // =======================================================
+      new HSMegaMenu('.js-mega-menu', {
+          desktop: {
+            position: 'left'
+          }
+        })
+
+
+      // INITIALIZATION OF SHOW ANIMATIONS
+      // =======================================================
+      new HSShowAnimation('.js-animation-link')
+      // INITIALIZATION OF INPUT MASK
+    // =======================================================
+      HSCore.components.HSMask.init('.js-input-mask')
+
+      // INITIALIZATION OF BOOTSTRAP VALIDATION
+      // =======================================================
+      {#HSBsValidation.init('.js-validate', {#}
+      {#  onSubmit: data => {#}
+      {#    data.event.preventDefault()#}
+      {#    alert('Submited')#}
+      {#  }#}
+
+
+
+      // INITIALIZATION OF BOOTSTRAP DROPDOWN
+      // =======================================================
+      HSBsDropdown.init()
+
+
+      // INITIALIZATION OF GO TO
+      // =======================================================
+      new HSGoTo('.js-go-to')
+
+
+      // INITIALIZATION OF SWIPER
+      // =======================================================
+      var sliderThumbs = new Swiper('.js-swiper-shop-hero-thumbs', {
+        watchSlidesVisibility: true,
+        watchSlidesProgress: true,
+        history: false,
+        slidesPerView: 3,
+        spaceBetween: 15,
+        on: {
+          beforeInit: (swiper) => {
+            const css = `.swiper-slide-thumb-active .swiper-thumb-progress .swiper-thumb-progress-path {
+                  opacity: 1;
+                  -webkit-animation: ${swiper.originalParams.autoplay.delay}ms linear 0ms forwards swiperThumbProgressDash;
+                  animation: ${swiper.originalParams.autoplay.delay}ms linear 0ms forwards swiperThumbProgressDash;
+              }`
+              style = document.createElement('style')
+            document.head.appendChild(style)
+            style.type = 'text/css'
+            style.appendChild(document.createTextNode(css));
+
+            swiper.el.querySelectorAll('.js-swiper-thumb-progress')
+            .forEach(slide => {
+              slide.insertAdjacentHTML('beforeend', '<span class="swiper-thumb-progress"><svg version="1.1" viewBox="0 0 160 160"><path class="swiper-thumb-progress-path" d="M 79.98452083651917 4.000001576345426 A 76 76 0 1 1 79.89443752470656 4.0000733121155605 Z"></path></svg></span>')
+            })
+          },
+        },
+      });
+
+      var swiper = new Swiper('.js-swiper-shop-classic-hero',{
+        autoplay: true,
+        loop: true,
+        navigation: {
+          nextEl: '.js-swiper-shop-classic-hero-button-next',
+          prevEl: '.js-swiper-shop-classic-hero-button-prev',
+        },
+        thumbs: {
+          swiper: sliderThumbs
+        }
+      });
+
+
+      // INITIALIZATION OF COUNTDOWN
+      // =======================================================
+      const oneYearFromNow = new Date()
+
+      document.querySelectorAll('.js-countdown').forEach(item => {
+        const days = item.querySelector('.js-cd-days'),
+          hours = item.querySelector('.js-cd-hours'),
+          minutes = item.querySelector('.js-cd-minutes'),
+          seconds = item.querySelector('.js-cd-seconds')
+
+        countdown(oneYearFromNow.setFullYear(
+          oneYearFromNow.getFullYear() + 1),
+          ts => {
+            days.innerHTML = ts.days
+            hours.innerHTML = ts.hours
+            minutes.innerHTML = ts.minutes
+            seconds.innerHTML = ts.seconds
+          },
+          countdown.DAYS | countdown.HOURS | countdown.MINUTES | countdown.SECONDS
+        )
+      })
+    })()
+  </script>

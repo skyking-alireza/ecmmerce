@@ -1,0 +1,299 @@
+﻿{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block customstyle %}
+    <style>
+        input[data-switch]:checked+label:after{
+            right: 78px;
+        }
+        .form-control{
+            width: 50%;
+        }
+        .none{
+            display: none;
+        }
+        .action-icon{
+            font-size: 24px;
+            padding-right: 10px;
+            cursor: pointer;
+        }
+        .select2-search__field{
+            font-family: 'IRANYekan';
+            font-weight: 800;
+        }
+        .resizeimage{
+            object-fit: cover;
+            min-width: 120px;
+            min-height: 120px;
+            max-width: 150px;
+            max-height: 150px;
+            margin: 10px auto 10px 10px;
+            cursor: pointer;
+            border-radius: 25%;
+            overflow: hidden;
+        }
+    </style>
+    <link href="{% static 'select2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'select2-bootstrap4.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block title %}
+    {{ title }}
+{% endblock %}
+{% block pagetitle %}
+    {{ title }}
+{% endblock %}
+{% block mainform %}
+    <script src="{% static 'lazyload.js'%}"></script>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h1 style="font-size: 20px" class="header-title">برندها</h1>
+                    <br>
+                    <br>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.media }}
+                        <div class="mb-3">
+                            <label class="form-label">نام محصول</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">نام انگلیسی محصول</label>
+                            {{ form.engname }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">دسته بندی</label>
+                            {{ form.category }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">وزن</label>
+                            {{ form.weight }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ابعاد</label>
+                            {{ form.dimensions }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">گارانتی</label>
+                            {{ form.warranty }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">تصویر</label>
+                            <br>
+                            <br>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#set" class="btn btn-outline-primary">انتخاب عکس اصلی</button>
+                            <br>
+                            <br>
+                            {{ form.image }}
+                            <img src="" alt="image" id="foo" class="img-fluid rounded none" width="200"/>
+                            <br>
+                            <br>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#setother" class="btn btn-outline-primary">انتخاب سایر عکس </button>
+                            {{ form.imageother }}
+                            <br>
+                            <br>
+                            <div class="row setotherimages">
+
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <p style="font-weight: 600;">ارسال کامنت </p>
+                            {{ form.allowcomment }}
+                            <label style="width: 100px" for="allowcomment" data-on-label="امکان ارسال" data-off-label="عدم امکان ارسال"></label>
+                        </div>
+                        <div class="mb-3">
+                            <p style="font-weight: 600;">نمایش محصول </p>
+                            {{ form.visibility }}
+                            <label style="width: 100px" for="visibility" data-on-label="نمایش" data-off-label="عدم نمایش"></label>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">مشخصات</label>
+                            <select id="select2">
+                                <option>------------</option>
+                                {% if datas %}
+                                    {% for data in datas %}
+                                        {% ifchanged %}
+                                            <option value="{{ data.namedetails.id }}">{{ data.namedetails }}</option>
+                                        {% endifchanged %}
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        <div data-bs-spy="scroll" data-bs-target="#navbar-example2" data-bs-offset="0"
+                            class="scrollspy-example">
+
+                        </div>
+                            {{ form.details }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">توضیحات سئو</label>
+                            {{ form.meta_descriptions }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">کلمات کلیدی</label>
+                            {{ form.meta_keywords }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">توضیحات</label>
+                            {{ form.descriptions }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">وضعیت</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">برند</label>
+                            {{ form.brand }}
+                            {{ form.countview }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">ثبت اطلاعات</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}
+{% block formerrors %}
+    {% if  form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div style="text-align: right" class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <strong>خطا </strong> {{ error }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+{% block modal %}
+    <div id="set" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="set" aria-hidden="true">
+        <div class="modal-dialog modal-full-width ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="fullWidthModalLabel">انتخاب عکس</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <iframe class="iframe" id="iframe" src="{% url 'select_image' %}" height="400px" width="100%" title="Iframe Example">
+
+                    </iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" class="btn btn-primary select">انتخاب</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div id="setother" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="setother" aria-hidden="true">
+        <div class="modal-dialog modal-full-width ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="fullWidthModalLabel">انتخاب عکس</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <iframe class="iframe-multi" id="iframe-multi" src="{% url 'select_multi_image' %}" height="400px" width="100%" title="Iframe Example">
+
+                    </iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" class="btn btn-primary select-multi">انتخاب</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+{% endblock %}
+{% block customjs %}
+    <script>
+        let lazy = lazyload();
+        lazyload();
+        $('#select2').change(function() {
+            $('.scrollspy-example').prepend(
+                '<div style="display: flex;"> '+
+                    '<select id="list'+ $(this).val() +'" class="setvalue" multiple>' +
+                    {% for data in datas %}
+                        ({{data.namedetails.id}} == $(this).val() ? '<option value="{{ data.id }}">{{ data.value }}</option>': '') +
+                    {% endfor %}
+                    '</select>'+
+                    '<a id="' +$(this).val()+ '" class="action-icon"> <i class="mdi mdi-delete"></i></a>'+
+                    '</div>'
+        );
+            $('#list'+ $(this).val()).select2({
+                placeholder: $( "#select2 option:selected" ).text(),
+            });
+
+            $("#select2 option:selected").attr('disabled','disabled')
+
+        });
+        function setselect(){
+            var x = [];
+            for (const element of $('.setvalue').find(':selected')) {
+              x.push(element.value);
+            };
+            $('#id_details').val(x);
+        };
+        $(document.body).on("select2:select",".setvalue",function(e){
+            setselect();
+        });
+        $(document.body).on("select2:unselect",".setvalue",function(e){
+            setselect();
+        });
+        $(document).on("click", ".action-icon", function(){
+            $("#list"+this.id).select2('destroy');
+            $("#list"+this.id).remove();
+            $(this).remove();
+            setselect();
+            $("#select2 option[value='" + this.id + "']").removeAttr('disabled');
+            $('#select2').val('')
+        });
+        $('.select-multi').click(function (){
+            var url = new URL('http://'+location.host+$(".iframe-multi").attr("src"));
+            var run = url.searchParams.get('id');
+            var idimages = [];
+            var urlimages = [];
+            $('.resizeimage').remove();
+            for (var idimage of $('.iframe-multi').contents().find('.img-active-multi')){
+                idimages.push(idimage.id);
+                urlimages.push(idimage);
+            };
+            for(url of urlimages){
+                $('.setotherimages').prepend('<img tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="برای حذف کلیک کنید" class="resizeimage" id="' + url.id + '" src="' + url.src + '">');
+            };
+            $('#id_imageother').val(idimages);
+            $('#setother').modal('hide');
+        });
+        $(document.body).on('click' , '.resizeimage',function () {
+            const index = $('#id_imageother').val().indexOf(this.id);
+            var arrayimage = $('#id_imageother').val()
+            arrayimage.splice(index, 1);
+            $('#id_imageother').val(arrayimage);
+            this.remove();
+        });
+        $('.select').click(function (){
+            var url = new URL('http://'+location.host+$(".iframe").attr("src"));
+            var run = url.searchParams.get('id');
+            if (run != null){
+              $('#set').modal('hide');
+              $('#'+run).attr("src", $('.iframe').contents().find('.img-active')[0].src);
+              $('.image'+run).attr('value' , $('.iframe').contents().find('.img-active')[0].id);
+            }
+            else{
+               $('#id_image').val($('.iframe').contents().find('.img-active')[0].id);
+               $('#set').modal('hide');
+               $('#foo').attr("src", $('.iframe').contents().find('.img-active')[0].src);
+               $("#foo").removeClass('none');
+            };
+        });
+    </script>
+    <script src="{% static 'select2.min.js' %}"></script>
+    <script src="{% static 'script.js' %}"></script>
+    <script src="{% static 'assets\js\app.min.js'%}"></script>
+    <script>
+    $(document).ready(function (){
+            $("#id_details").select2('destroy');
+            $("#id_image").select2('destroy');
+            $("#id_imageother").select2('destroy');
+        });
+    </script>
+{% endblock %}

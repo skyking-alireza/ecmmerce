@@ -1,0 +1,1301 @@
+{% load static %}
+{% load tags %}
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Title -->
+    <title>{{ product_select.name }}</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="..\favicon.ico">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS Implementing Plugins -->
+    <link rel="stylesheet" href="{% static 'main\assets\css\vendor.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main\assets\vendor\bootstrap-icons\font\bootstrap-icons.css' %}">
+    <link href="{% static 'customize/main.css' %}" rel="stylesheet" type="text/css" id="light-style">
+    <link rel="stylesheet" href="{% static 'main\assets\css\theme.min.css' %}">
+    <link rel="stylesheet" href="./node_modules/tom-select/dist/css/tom-select.bootstrap5.css">
+    <script src="{% static 'axios.min.js' %}"></script>
+    <meta name="keywords" content="{{ product_select.meta_keywords }}"/>
+    <meta name="robots" content="index, follow"/>
+    <meta property="category" content="product">
+    <meta name="description" content="{{ product_select.meta_descriptions }}">
+    <style>
+        body {
+            font-family: IRANYekan, Inter, sans-serif
+        }
+
+        .form-check-input {
+            display: none;
+        }
+
+        .col-md {
+            max-width: 200px;
+        }
+
+        .swiper-button-next:after, .swiper-rtl .swiper-button-prev:after {
+            content: '';
+        }
+
+        .swiper-button-prev:after, .swiper-rtl .swiper-button-next:after {
+            content: '';
+        }
+
+        .swiper-button-prev:after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23677788'%3e%3cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e")
+        }
+
+        .swiper-button-prev:hover:after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23377dff'%3e%3cpath d='M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e")
+        }
+
+        .swiper-button-next:after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23677788'%3e%3cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e")
+        }
+
+        .swiper-button-next:hover:after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23377dff'%3e%3cpath d='M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z'/%3e%3c/svg%3e")
+        }
+
+        .title-td {
+            border: none;
+            width: 200px;
+        }
+
+        .avatar-title {
+            display: flex;
+            height: 100%;
+        }
+
+        .bi-star-fill {
+            cursor: pointer;
+        }
+
+        .star-widget input {
+            display: none;
+        }
+
+        .star-widget label {
+            font-size: 20px;
+            color: #444;
+            padding: 5px;
+            float: right;
+            transition: all 0.2s ease;
+        }
+
+        input:not(:checked) ~ label:hover,
+        input:not(:checked) ~ label:hover ~ label {
+            color: #fd4;
+        }
+
+        input:checked ~ label {
+            color: #fd4;
+        }
+    </style>
+</head>
+<body>
+{% include 'main/header.html' %}
+<main id="content" role="main">
+    <!-- Hero -->
+    <div class="container content-space-t-1 content-space-t-sm-2">
+        <div class="row">
+            <div class="col-md-7 mb-7 mb-md-0">
+                <div class="pe-md-4">
+                    <div class="card-pinned">
+                        <!-- Swiper Main Slider -->
+                        <div class="js-swiper-shop-product swiper">
+                            <div class="swiper-wrapper">
+                                <!-- Slide -->
+                                {% if product_select.image.image.url %}
+                                    <div class="swiper-slide">
+                                        <div class="card card-bordered shadow-none">
+                                            <img class="card-img" src="{{ product_select.image.image.url }}"
+                                                 alt="{{ product_select.image.alt }}">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if product_select.imageother.all %}
+                                    {% for show_image in product_select.imageother.all %}
+                                        <div class="swiper-slide">
+                                            <div class="card card-bordered shadow-none">
+                                                <img class="card-img" src="{{ show_image.image.url }}"
+                                                     alt="{{ show_image.alt }}">
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+
+                            <!-- Arrows -->
+                            <div class="js-swiper-shop-product-button-prev swiper-button-prev"></div>
+                            <div class="js-swiper-shop-product-button-next swiper-button-next"></div>
+                        </div>
+                        <!-- End Swiper Main Slider -->
+
+                        <!-- Swiper Thumb Slider -->
+                        <div class="position-absolute bottom-0 end-0 start-0 zi-1 p-4">
+                            <div class="js-swiper-shop-product-thumb swiper" style="max-width: 15rem;">
+                                <div class="swiper-wrapper">
+                                    {% if product_select.imageother.all %}
+                                        {% for show_image in product_select.imageother.all %}
+                                            <div class="swiper-slide">
+                                                <a class="avatar avatar-circle" href="javascript:">
+                                                    <img class="avatar-img" src="{{ show_image.image.url }}"
+                                                         alt="{{ show_image.alt }}">
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <!-- End Slide -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Swiper Main Slider -->
+                    </div>
+                </div>
+            </div>
+            <!-- End Col -->
+
+            <div class="col-md-5">
+                <!-- Rating -->
+                <a class="gap-1 mb-4 find-me" href="{{ product_select.brand.get_absolute_url }}">
+                    <span class="ms-1">{{ product_select.brand }}</span>
+                </a>
+                <a class="gap-1 mb-4" href="{{ product_select.category.first.get_absolute_url }}">
+                    <span class="ms-1">{{ product_select.category.first }}</span>
+                </a>
+                <!-- End Rating -->
+                <!-- Heading -->
+                <div class="mb-5">
+                    <h1 class="h2">{{ product_select.name }}</h1>
+                    <p>{{ product_select.engname }}</p>
+                </div>
+                <!-- End Heading -->
+                <!-- Price -->
+                {% if product_select.get_price|is_str %}
+                    <div class="mb-5">
+                        <span class="ms-0">{{ product_select.get_price }}</span>
+                    </div>
+                    <div class="d-grid mb-4">
+                        <button type="button" class="btn btn-soft-danger">موجود شد مرا مطلع کن
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="mb-5">
+                        <div class="d-flex align-items-center">
+                            <h3 class="mb-0" id="price-main">یک مورد را انتخاب کنید</h3>
+                            <span class="ms-2"><del id="price-discount"></del></span>
+                        </div>
+                    </div>
+                    {% if user.colleague %}
+                        <div class="row gx-3">
+                            {% for price in pro_price %}
+                                {% if price.colleague %}
+                                    <div class="col-6 col-md-3 mb-3">
+                                        <div class="form-check form-check-card text-center">
+                                            <input data="{{ price.price_colleague }}" value="{{ price.id }}"
+                                                   data-max="{{ price.max_colleague }}"
+                                                   data-min="{{ price.min_colleague }}" class="form-check-input"
+                                                   type="radio" name="typeOfListing" id="price{{ price.id }}">
+                                            <label class="form-check-label" for="price{{ price.id }}">
+                                        <span class="avatar" style="background-color: {{ price.color.color }}">
+                                          <span class="avatar-initials">{{ price.color.name }}</span>
+                                        </span>
+                                                <span class="d-block">{{ price.details|default_if_none:"بدون رنگ و متغیر" }}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-6 col-md-3 mb-3">
+                                        <div class="form-check form-check-card text-center">
+                                            <input value="{{ price.id }}" data-discount="{{ price.price_discount }}"
+                                                   data="{{ price.price }}" data-max="{{ price.max }}"
+                                                   data-min="{{ price.min }}" class="form-check-input" type="radio"
+                                                   name="typeOfListing" id="price{{ price.id }}">
+                                            <label class="form-check-label" for="price{{ price.id }}">
+                                        <span class="avatar" style="background-color: {{ price.color.color }}">
+                                          <span class="avatar-initials">{{ price.color.name }}</span>
+                                        </span>
+                                                <span class="d-block">{{ price.details|default_if_none:"بدون رنگ و متغیر" }}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="row gx-3">
+                            {% for price in pro_price %}
+                                <div class="col-6 col-md-3 mb-3">
+                                    <div class="form-check form-check-card text-center">
+                                        <input value="{{ price.id }}" data-discount="{{ price.price_discount }}"
+                                               data="{{ price.price }}" data-max="{{ price.max }}"
+                                               data-min="{{ price.min }}" class="form-check-input" type="radio"
+                                               name="typeOfListing" id="price{{ price.id }}">
+                                        <label class="form-check-label" for="price{{ price.id }}">
+                                        <span class="avatar" style="background-color: {{ price.color.color }}">
+                                          <span class="avatar-initials">{{ price.color.name }}</span>
+                                        </span>
+                                            <span class="d-block">{{ price.details|default_if_none:"بدون رنگ و متغیر" }}</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="quantity-counter mb-3">
+                        <div class="js-quantity-counter row align-items-center">
+                            <div class="col">
+                                <span class="d-block small">تعداد</span>
+                                <input class="js-result form-control form-control-quantity-counter"
+                                       style="background: none" min="1" max="10" type="text" value="1" disabled>
+                            </div>
+                            <!-- End Col -->
+
+                            <div class="col-auto">
+                                <a class="js-minus btn btn-outline-secondary btn-xs btn-icon rounded-circle"
+                                   href="javascript:">
+                                    <svg width="8" height="2" viewbox="0 0 8 2" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0 1C0 0.723858 0.223858 0.5 0.5 0.5H7.5C7.77614 0.5 8 0.723858 8 1C8 1.27614 7.77614 1.5 7.5 1.5H0.5C0.223858 1.5 0 1.27614 0 1Z"
+                                              fill="currentColor"></path>
+                                    </svg>
+                                </a>
+                                <a class="js-plus btn btn-outline-secondary btn-xs btn-icon rounded-circle"
+                                   href="javascript:">
+                                    <svg width="8" height="8" viewbox="0 0 8 8" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 0C4.27614 0 4.5 0.223858 4.5 0.5V3.5H7.5C7.77614 3.5 8 3.72386 8 4C8 4.27614 7.77614 4.5 7.5 4.5H4.5V7.5C4.5 7.77614 4.27614 8 4 8C3.72386 8 3.5 7.77614 3.5 7.5V4.5H0.5C0.223858 4.5 0 4.27614 0 4C0 3.72386 0.223858 3.5 0.5 3.5H3.5V0.5C3.5 0.223858 3.72386 0 4 0Z"
+                                              fill="currentColor"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                            <!-- End Col -->
+                        </div>
+                        <!-- End Row -->
+                    </div>
+                    <div class="d-grid mb-4">
+                        <button type="button" class="btn btn-primary btntransition">افزودن به سبد خرید</button>
+                    </div>
+                {% endif %}
+
+                <!-- End Price -->
+            </div>
+            {{ request.session.cart }}
+
+
+        </div>
+        <!-- End Col -->
+    </div>
+    <!-- End Row -->
+    </div>
+    <!-- End Hero -->
+
+
+    <!-- End Row -->
+    <!-- new start -->
+    <div class="card mb-7">
+        <div class="card-header">
+            <ul class="nav nav-segment" id="navTab1" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="nav-resultTab1" href="#nav-result1" data-bs-toggle="pill"
+                       data-bs-target="#nav-result1" role="tab" aria-controls="nav-result1"
+                       aria-selected="true">معرفی</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="nav-resultTab2" href="#nav-result2" data-bs-toggle="pill"
+                       data-bs-target="#nav-result2" role="tab" aria-controls="nav-result2"
+                       aria-selected="false">مشخصات</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="nav-resultTab3" href="#nav-result3" data-bs-toggle="pill"
+                       data-bs-target="#nav-result3" role="tab" aria-controls="nav-result3" aria-selected="false">دیدگاه
+                        ها</a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content container" id="navTabContent1">
+            <div class="tab-pane fade p-4 active show" id="nav-result1" role="tabpanel"
+                 aria-labelledby="nav-resultTab1">
+                {{ product_select.descriptions | safe }}
+            </div>
+            <div class="tab-content container" id="navTabContent2">
+                <div class="tab-pane fade p-4" id="nav-result2" role="tabpanel" aria-labelledby="nav-resultTab2">
+                    <!-- Table -->
+                    <table class="table table-nowrap table-vertical-border-striped">
+                        <tbody>
+                        {% if product_select.details.all %}
+                            {% for prode in product_select.details.all %}
+                                <tr>
+                                    {% ifchanged prode.namedetails %}
+                                        <td class="table-text-center title-td text-dark">{{ prode.namedetails }}</td>
+                                        <td class="table-text-center text-dark">{{ prode }}</td>
+                                    {% else %}
+                                        <td class="table-text-center title-td text-dark"></td>
+                                        <td class="table-text-center text-dark">{{ prode }}</td>
+                                    {% endifchanged %}
+
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+
+                        {% endif %}
+
+                        </tbody>
+                    </table>
+                    <!-- End Table -->
+                </div>
+                <div class="tab-content container" id="navTabContent3">
+                    <div class="tab-pane fade p-4" id="nav-result3" role="tabpanel" aria-labelledby="nav-resultTab3">
+                        <!-- Review Section -->
+                        {% if comment %}
+                            <div id="reviewSection" class="container content-space-2 content-space-lg-3">
+                                <div class="row">
+                                    <div class="col-md-4 mb-7 mb-md-0">
+                                        <div class="border-bottom pb-4 mb-4">
+                                            <!-- Card -->
+                                            <div class="card bg-primary mb-3">
+                                                <div class="card-body">
+                                                    <!-- Media -->
+                                                    <div class="d-flex justify-content-center">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="flex-shrink-0">
+                                                                <span class="display-4 text-white">{{ star_avg }}</span>
+                                                            </div>
+
+                                                            <div class="flex-grow-1 ms-3">
+                                                                <!-- Rating -->
+                                                                <div class="d-flex gap-1 small">
+                                                                    {% for i in "x"|rjust:star_avg %}
+                                                                        <svg width="24" height="24" viewBox="0 0 24 24"
+                                                                             fill="none"
+                                                                             xmlns="http://www.w3.org/2000/svg">
+                                                                            <path d="M13.0079 2.6L15.7079 7.2L21.0079 8.4C21.9079 8.6 22.3079 9.7 21.7079 10.4L18.1079 14.4L18.6079 19.8C18.7079 20.7 17.7079 21.4 16.9079 21L12.0079 18.8L7.10785 21C6.20785 21.4 5.30786 20.7 5.40786 19.8L5.90786 14.4L2.30785 10.4C1.70785 9.7 2.00786 8.6 3.00786 8.4L8.30785 7.2L11.0079 2.6C11.3079 1.8 12.5079 1.8 13.0079 2.6Z"
+                                                                                  fill="#F39C12"></path>
+                                                                        </svg>
+                                                                    {% endfor %}
+                                                                </div>
+                                                                <!-- End Rating -->
+                                                                <span class="text-white">{{ comment.count }} نفر رای دادند </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- End Media -->
+                                                </div>
+                                            </div>
+                                            <!-- End Card -->
+
+                                        </div>
+
+                                        <h4 class="display-4 text-primary">{% widthratio star_avg 1 20 %}%</h4>
+                                        <p class="small">از مشتریان خرید این محصول را توصیه کردند</p>
+                                    </div>
+                                    <!-- End Col -->
+
+                                    <div class="col-md-8">
+                                        <div class="ps-md-4">
+                                            <!-- Comment -->
+                                            <ul class="list-comment list-comment-divider mb-5">
+                                                <!-- Item -->
+                                                {% for com in comment %}
+                                                    <li class="list-comment-item">
+                                                        <div class="d-flex gap-1 mb-3">
+                                                            {% for i in "x"|rjust:com.starts %}
+                                                                <svg width="24" height="24" viewBox="0 0 24 24"
+                                                                     fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M13.0079 2.6L15.7079 7.2L21.0079 8.4C21.9079 8.6 22.3079 9.7 21.7079 10.4L18.1079 14.4L18.6079 19.8C18.7079 20.7 17.7079 21.4 16.9079 21L12.0079 18.8L7.10785 21C6.20785 21.4 5.30786 20.7 5.40786 19.8L5.90786 14.4L2.30785 10.4C1.70785 9.7 2.00786 8.6 3.00786 8.4L8.30785 7.2L11.0079 2.6C11.3079 1.8 12.5079 1.8 13.0079 2.6Z"
+                                                                          fill="#F39C12"></path>
+                                                                </svg>
+                                                            {% endfor %}
+                                                        </div>
+
+                                                        <!-- Media -->
+                                                        <div class="d-flex align-items-center mb-3">
+                                                            <div class="flex-shrink-0">
+                                                                <img class="avatar avatar-sm avatar-circle"
+                                                                        {% if com.account.image %}
+                                                                     src="{{ com.account.image.url }}"
+                                                                     alt="{{ com.account.firstname }}"
+                                                                        {% endif %} >
+                                                            </div>
+
+                                                            <div class="flex-grow-1 ms-3">
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <h5 class="mb-0">{{ com.title }}</h5>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- End Media -->
+
+                                                        <div class="mb-5">
+                                                            <p>{{ com.text }}</p>
+                                                        </div>
+
+                                                        <div class="mb-2">
+                                                            <span class="text-dark fw-semi-bold">{{ com.account.first_name }}</span>
+                                                            <span>{{ com.account.last_name }}</span>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                            <!-- End Comment -->
+
+                                            <div class="d-sm-flex justify-content-sm-end gap-2">
+                                                <button type="button"
+                                                        class="btn btn-primary btn-transition rounded-pill"
+                                                        data-bs-toggle="modal" data-bs-target="#commentModal">یک نظر
+                                                    بنویسید
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Col -->
+                                </div>
+                                <!-- End Row -->
+                            </div>
+
+                        {% else %}
+                            <div class="alert alert-soft-info" role="alert">
+                                تاکنون نظری برای این محصول ثبت نشده
+                            </div>
+                            <div class="d-sm-flex justify-content-sm-end gap-2">
+                                <button type="button" class="btn btn-primary btn-transition rounded-pill"
+                                        data-bs-toggle="modal" data-bs-target="#commentModal">یک نظر بنویسید
+                                </button>
+                            </div>
+                        {% endif %}
+                        <!-- End Review Section -->
+                    </div>
+                    <!-- End Tab Content -->
+                </div>
+                <!-- new end -->
+
+                <div class="modal fade" id="commentModal" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">ثبت نظر</h5>
+                            </div>
+                            {% if user.is_authenticated %}
+                                <form method="post" >
+                                    <div class="modal-body">
+
+                                        {% csrf_token %}
+                                        <div class="row mb-4">
+                                            <label class="col-sm-3 col-form-label form-label">امتیاز</label>
+                                            <div class="col-sm-9">
+                                                <div class="star-widget">
+                                                    <input type="radio" name="starts" id="rate-5" value="5">
+                                                    <label for="rate-5" class="bi bi-star-fill"></label>
+                                                    <input type="radio" name="starts" id="rate-4" value="4">
+                                                    <label for="rate-4" class="bi bi-star-fill"></label>
+                                                    <input type="radio" name="starts" id="rate-3" value="3">
+                                                    <label for="rate-3" class="bi bi-star-fill"></label>
+                                                    <input type="radio" name="starts" id="rate-2" value="2">
+                                                    <label for="rate-2" class="bi bi-star-fill"></label>
+                                                    <input type="radio" name="starts" id="rate-1" value="1">
+                                                    <label for="rate-1" class="bi bi-star-fill"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-4">
+                                            <label class="col-sm-3 col-form-label form-label">عنوان</label>
+                                            <div class="col-sm-9">
+                                                {{ form.title }}
+                                            </div>
+                                        </div>
+                                        <div class="row mb-4">
+                                            <label class="col-sm-3 col-form-label form-label">توضیحات</label>
+                                            <div class="col-sm-9">
+                                                {{ form.text }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <p type="submit" class="btn btn-primary set-comment">ثبت نظر</p>
+                                </form>
+                            {% else %}
+                                <div class="modal-body">
+                                    برای ثبت نظر ابتدا وارد شوید
+                                </div>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-primary">ورود</button>
+                            {% endif %}
+                            <button type="button" class="btn btn-white" data-bs-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Card Grid -->
+                <div class="container content-space-2 content-space-lg-3">
+                    <!-- Title -->
+                    <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+                        <h2>محصولات مشابه</h2>
+                    </div>
+                    <!-- End Title -->
+                    {% if other_product %}
+                        <div class="row row-cols-sm-2 row-cols-md-3 row-cols-lg-4">
+
+                            <div class="js-swiper-responsive-breakpoint swiper">
+                                <div class="swiper-wrapper">
+                                    {% for foo in other_product %}
+                                        <div class="swiper-slide">
+                                            <div class="col mb-4">
+                                                <!-- Card -->
+                                                <div class="card card-bordered shadow-none text-center h-100">
+                                                    <div class="card-pinned">
+                                                        <img class="card-img-top" src="{{ foo.image.image.url }}"
+                                                             alt="{{ foo.image.image.alt }}">
+                                                    </div>
+
+                                                    <div class="card-body">
+                                                        <div class="mb-1">
+                                                            <a class="link-sm link-secondary"
+                                                               href="{{ foo.category.first.get_absolute_url }}">{{ foo.category.first }}</a>
+                                                        </div>
+                                                        <a class="text-body"
+                                                           href="{{ foo.get_absolute_url }}">{{ foo.name|truncatechars:55 }}</a>
+                                                        {% if foo.get_price|is_str %}
+                                                            <p class="card-text text-dark ">{{ foo.get_price }}</p>
+                                                        {% else %}
+                                                            {% if foo.get_price.discount %}
+                                                                <span class="ms-2"><del id="price-discount"
+                                                                                        class="fa-price"
+                                                                                        data="{{ foo.get_price.price }}"></del></span>
+                                                                <p class="card-text text-dark fa-price"
+                                                                   data="{{ foo.get_price.price_discount }}"></p>
+                                                            {% else %}
+                                                                <p class="card-text text-dark fa-price"
+                                                                   data="{{ foo.get_price.price }}"></p>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    </div>
+
+                                                    <div class="card-footer pt-0">
+                                                        <!-- Rating -->
+                                                        <a class="d-inline-flex align-items-center mb-3" href="#">
+                                                            <div class="d-flex gap-1 me-2">
+                                                                {% if foo.get_stars|is_numberic %}
+                                                                    {% for i in "x"|rjust:foo.get_stars %}
+                                                                        <svg width="24" height="24" viewBox="0 0 24 24"
+                                                                             fill="none"
+                                                                             xmlns="http://www.w3.org/2000/svg">
+                                                                            <path d="M13.0079 2.6L15.7079 7.2L21.0079 8.4C21.9079 8.6 22.3079 9.7 21.7079 10.4L18.1079 14.4L18.6079 19.8C18.7079 20.7 17.7079 21.4 16.9079 21L12.0079 18.8L7.10785 21C6.20785 21.4 5.30786 20.7 5.40786 19.8L5.90786 14.4L2.30785 10.4C1.70785 9.7 2.00786 8.6 3.00786 8.4L8.30785 7.2L11.0079 2.6C11.3079 1.8 12.5079 1.8 13.0079 2.6Z"
+                                                                                  fill="#F39C12"></path>
+                                                                        </svg>
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            </div>
+                                                        </a>
+                                                        <!-- End Rating -->
+                                                    </div>
+                                                </div>
+                                                <!-- End Card -->
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <!-- Swiper Pagination -->
+                            <div class="js-swiper-responsive-breakpoint-pagination swiper-pagination"></div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-soft-danger" role="alert">
+                            محصول مشابه ای یافت نشد !
+                        </div>
+                    {% endif %}
+                    <!-- End Row -->
+                </div>
+
+                <!-- Subscribe -->
+                <div class="bg-light">
+                    <div class="container content-space-2">
+                        <div class="w-md-75 w-lg-50 text-center mx-md-auto">
+                            <div class="row justify-content-lg-between">
+                                <!-- Heading -->
+                                <div class="mb-5">
+                                    <span class="text-cap">اشتراک</span>
+                                    <h2>از آخرین اخبار ما مطلع شوید</h2>
+                                </div>
+                                <!-- End Heading -->
+
+                                <form>
+                                    <!-- Input Card -->
+                                    <div class="input-card input-card-pill input-card-sm border mb-3">
+                                        <div class="input-card-form">
+                                            <label for="subscribeForm" class="form-label visually-hidden">ایمیل خود را
+                                                وارد کنید</label>
+                                            <input type="text" class="form-control form-control-lg" id="subscribeForm"
+                                                   placeholder="ایمیل خود را وارد کنید" aria-label="Enter email">
+                                        </div>
+                                        <button type="button" class="btn btn-primary btn-lg rounded-pill">عضویت</button>
+                                    </div>
+                                    <!-- End Input Card -->
+                                </form>
+
+                                <p class="small">شما می توانید هر زمان لغو اشتراک کنید . درباره ما <a href="#">بیشتر
+                                    بدانید</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Subscribe -->
+</main>
+{% include 'main/footer.html' %}
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <!-- Header -->
+            <div class="modal-close">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- End Header -->
+
+            <!-- Body -->
+            <div class="modal-body">
+                <!-- Log in -->
+                <div id="signupModalFormLogin" style="display: none; opacity: 0;">
+                    <!-- Heading -->
+                    <div class="text-center mb-7">
+                        <h2>Log in</h2>
+                        <p>Don't have an account yet?
+                            <a class="js-animation-link link" href="javascript:" role="button"
+                               data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormSignup",
+                         "groupName": "idForm"
+                       }'>Sign up</a>
+                        </p>
+                    </div>
+                    <!-- End Heading -->
+
+                    <div class="d-grid gap-2">
+                        <a class="btn btn-white btn-lg" href="#">
+                <span class="d-flex justify-content-center align-items-center">
+                  <img class="avatar avatar-xss me-2" src="..\assets\svg\brands\google-icon.svg"
+                       alt="Image Description">
+                  Log in with Google
+                </span>
+                        </a>
+
+                        <a class="js-animation-link btn btn-primary btn-lg" href="#" data-hs-show-animation-options='{
+                       "targetSelector": "#signupModalFormLoginWithEmail",
+                       "groupName": "idForm"
+                     }'>Log in with Email</a>
+                    </div>
+                </div>
+                <!-- End Log in -->
+
+                <!-- Log in with Modal -->
+                <div id="signupModalFormLoginWithEmail" style="display: none; opacity: 0;">
+                    <!-- Heading -->
+                    <div class="text-center mb-7">
+                        <h2>Log in</h2>
+                        <p>Don't have an account yet?
+                            <a class="js-animation-link link" href="javascript:" role="button"
+                               data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormSignup",
+                         "groupName": "idForm"
+                       }'>Sign up</a>
+                        </p>
+                    </div>
+                    <!-- End Heading -->
+
+                    <form class="js-validate needs-validation" novalidate="">
+                        <!-- Form -->
+                        <div class="mb-3">
+                            <label class="form-label" for="signupModalFormLoginEmail">Your email</label>
+                            <input type="email" class="form-control form-control-lg" name="email"
+                                   id="signupModalFormLoginEmail" placeholder="email@site.com"
+                                   aria-label="email@site.com" required="">
+                            <span class="invalid-feedback">Please enter a valid email address.</span>
+                        </div>
+                        <!-- End Form -->
+
+                        <!-- Form -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label class="form-label" for="signupModalFormLoginPassword">Password</label>
+
+                                <a class="js-animation-link form-label-link" href="javascript:"
+                                   data-hs-show-animation-options='{
+                       "targetSelector": "#signupModalFormResetPassword",
+                       "groupName": "idForm"
+                     }'>Forgot Password?</a>
+                            </div>
+
+                            <input type="password" class="form-control form-control-lg" name="password"
+                                   id="signupModalFormLoginPassword" placeholder="8+ characters required"
+                                   aria-label="8+ characters required" required="" minlength="8">
+                            <span class="invalid-feedback">Please enter a valid password.</span>
+                        </div>
+                        <!-- End Form -->
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary form-control-lg">Log in</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- End Log in with Modal -->
+
+                <!-- Sign up -->
+                <div id="signupModalFormSignup">
+                    <!-- Heading -->
+                    <div class="text-center mb-7">
+                        <h2>Sign up</h2>
+                        <p>Already have an account?
+                            <a class="js-animation-link link" href="javascript:" role="button"
+                               data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormLogin",
+                         "groupName": "idForm"
+                       }'>Log in</a>
+                        </p>
+                    </div>
+                    <!-- End Heading -->
+
+                    <div class="d-grid gap-3">
+                        <a class="btn btn-white btn-lg" href="#">
+                <span class="d-flex justify-content-center align-items-center">
+                  <img class="avatar avatar-xss me-2" src="..\assets\svg\brands\google-icon.svg"
+                       alt="Image Description">
+                  Sign up with Google
+                </span>
+                        </a>
+
+                        <a class="js-animation-link btn btn-primary btn-lg" href="#" data-hs-show-animation-options='{
+                       "targetSelector": "#signupModalFormSignupWithEmail",
+                       "groupName": "idForm"
+                     }'>Sign up with Email</a>
+
+                        <div class="text-center">
+                            <p class="small mb-0">By continuing you agree to our <a href="#">Terms and Conditions</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Sign up -->
+
+                <!-- Sign up with Modal -->
+                <div id="signupModalFormSignupWithEmail" style="display: none; opacity: 0;">
+                    <!-- Heading -->
+                    <div class="text-center mb-7">
+                        <h2>Sign up</h2>
+                        <p>Already have an account?
+                            <a class="js-animation-link link" href="javascript:" role="button"
+                               data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormLogin",
+                         "groupName": "idForm"
+                       }'>Log in</a>
+                        </p>
+                    </div>
+                    <!-- End Heading -->
+
+                    <form class="js-validate need-validate" novalidate="">
+                        <!-- Form -->
+                        <div class="mb-3">
+                            <label class="form-label" for="signupModalFormSignupEmail">Your email</label>
+                            <input type="email" class="form-control form-control-lg" name="email"
+                                   id="signupModalFormSignupEmail" placeholder="email@site.com"
+                                   aria-label="email@site.com" required="">
+                            <span class="invalid-feedback">Please enter a valid email address.</span>
+                        </div>
+                        <!-- End Form -->
+
+                        <!-- Form -->
+                        <div class="mb-3">
+                            <label class="form-label" for="signupModalFormSignupPassword">Password</label>
+                            <input type="password" class="form-control form-control-lg" name="password"
+                                   id="signupModalFormSignupPassword" placeholder="8+ characters required"
+                                   aria-label="8+ characters required" required="">
+                            <span class="invalid-feedback">Your password is invalid. Please try again.</span>
+                        </div>
+                        <!-- End Form -->
+
+                        <!-- Form -->
+                        <div class="mb-3" data-hs-validation-validate-class="">
+                            <label class="form-label" for="signupModalFormSignupConfirmPassword">Confirm
+                                password</label>
+                            <input type="password" class="form-control form-control-lg" name="confirmPassword"
+                                   id="signupModalFormSignupConfirmPassword" placeholder="8+ characters required"
+                                   aria-label="8+ characters required" required=""
+                                   data-hs-validation-equal-field="#signupModalFormSignupPassword">
+                            <span class="invalid-feedback">Password does not match the confirm password.</span>
+                        </div>
+                        <!-- End Form -->
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary form-control-lg">Sign up</button>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="small mb-0">By continuing you agree to our <a href="#">Terms and Conditions</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+                <!-- End Sign up with Modal -->
+
+                <!-- Reset Password -->
+                <div id="signupModalFormResetPassword" style="display: none; opacity: 0;">
+                    <!-- Heading -->
+                    <div class="text-center mb-7">
+                        <h2>Forgot password?</h2>
+                        <p>Enter the email address you used when you joined and we'll send you instructions to reset
+                            your password.</p>
+                    </div>
+                    <!-- En dHeading -->
+
+                    <form class="js-validate need-validate" novalidate="">
+                        <div class="mb-3">
+                            <!-- Form -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label class="form-label" for="signupModalFormResetPasswordEmail" tabindex="0">Your
+                                    email</label>
+
+                                <a class="js-animation-link form-label-link" href="javascript:"
+                                   data-hs-show-animation-options='{
+                         "targetSelector": "#signupModalFormLogin",
+                         "groupName": "idForm"
+                       }'>
+                                    <i class="bi-chevron-left small"></i> Back to Log in
+                                </a>
+                            </div>
+
+                            <input type="email" class="form-control form-control-lg" name="email"
+                                   id="signupModalFormResetPasswordEmail" tabindex="1"
+                                   placeholder="Enter your email address" aria-label="Enter your email address"
+                                   required="">
+                            <span class="invalid-feedback">Please enter a valid email address.</span>
+                            <!-- End Form -->
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary form-control-lg">Submit</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- End Reset Password -->
+            </div>
+            <!-- End Body -->
+
+            <!-- Footer -->
+            <div class="modal-footer d-block text-center py-sm-5">
+                <small class="text-cap mb-4">Trusted by the world's best teams</small>
+
+                <div class="w-85 mx-auto">
+                    <div class="row justify-content-between">
+                        <div class="col">
+                            <img class="img-fluid" src="..\assets\svg\brands\gitlab-gray.svg" alt="Logo">
+                        </div>
+                        <!-- End Col -->
+
+                        <div class="col">
+                            <img class="img-fluid" src="..\assets\svg\brands\fitbit-gray.svg" alt="Logo">
+                        </div>
+                        <!-- End Col -->
+
+                        <div class="col">
+                            <img class="img-fluid" src="..\assets\svg\brands\flow-xo-gray.svg" alt="Logo">
+                        </div>
+                        <!-- End Col -->
+
+                        <div class="col">
+                            <img class="img-fluid" src="..\assets\svg\brands\layar-gray.svg" alt="Logo">
+                        </div>
+                        <!-- End Col -->
+                    </div>
+                </div>
+                <!-- End Row -->
+            </div>
+            <!-- End Footer -->
+        </div>
+    </div>
+</div>
+
+<!-- Go To -->
+<a class="js-go-to go-to position-fixed" href="javascript:" style="visibility: hidden;" data-hs-go-to-options='{
+       "offsetTop": 700,
+       "position": {
+         "init": {
+           "right": "2rem"
+         },
+         "show": {
+           "bottom": "2rem"
+         },
+         "hide": {
+           "bottom": "-2rem"
+         }
+       }
+     }'>
+    <i class="bi-chevron-up"></i>
+</a>
+
+<!-- Offcanvas Search -->
+<div class="offcanvas offcanvas-top offcanvas-navbar-search bg-light" tabindex="-1" id="offcanvasNavbarSearch">
+    <div class="offcanvas-body">
+        <div class="container">
+            <div class="w-lg-75 mx-lg-auto">
+                <div class="d-flex justify-content-end mb-3">
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="mb-7">
+                    <!-- Form -->
+                    <form>
+                        <!-- Input Card -->
+                        <div class="input-card">
+                            <div class="input-card-form">
+                                <input type="text" class="form-control form-control-lg" placeholder="Search Front"
+                                       aria-label="Search Front">
+                            </div>
+                            <button type="button" class="btn btn-primary btn-lg">Search</button>
+                        </div>
+                        <!-- End Input Card -->
+                    </form>
+                    <!-- End Form -->
+                </div>
+
+                <div class="d-none d-md-block">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <h5>Quick Links</h5>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <!-- List -->
+                                    <ul class="list-pointer list-pointer-primary mb-0">
+                                        <li class="list-pointer-item">
+                                            <a class="link-sm link-secondary" href="#">Search Results List</a>
+                                        </li>
+                                        <li class="list-pointer-item">
+                                            <a class="link-sm link-secondary" href="#">Search Results Grid</a>
+                                        </li>
+                                        <li class="list-pointer-item">
+                                            <a class="link-sm link-secondary" href="#">About</a>
+                                        </li>
+                                        <li class="list-pointer-item">
+                                            <a class="link-sm link-secondary" href="#">Services</a>
+                                        </li>
+                                        <li class="list-pointer-item">
+                                            <a class="link-sm link-secondary" href="#">Invoice</a>
+                                        </li>
+                                    </ul>
+                                    <!-- End List -->
+                                </div>
+                                <!-- End Col -->
+
+                                <div class="col-6">
+                                    <!-- List -->
+                                    <ul class="list-pointer list-pointer-primary mb-0">
+                                        <li class="list-pointer-item">
+                                            <a class="link-sm link-secondary" href="#">Profile</a>
+                                        </li>
+                                        <li class="list-pointer-item">
+                                            <a class="link-sm link-secondary" href="#">User Contacts</a>
+                                        </li>
+                                        <li class="list-pointer-item">
+                                            <a class="link-sm link-secondary" href="#">Reviews</a>
+                                        </li>
+                                        <li class="list-pointer-item">
+                                            <a class="link-sm link-secondary" href="#">Settings</a>
+                                        </li>
+                                    </ul>
+                                    <!-- End List -->
+                                </div>
+                                <!-- End Col -->
+                            </div>
+                            <!-- End Row -->
+                        </div>
+                        <!-- End Col -->
+
+                        <div class="col-sm-6">
+                            <!-- Card -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <img class="img-fluid" src="..\assets\img\mockups\img1.png"
+                                                 alt="Image Description">
+                                        </div>
+                                        <!-- End Col -->
+
+                                        <div class="col-6">
+                                            <div class="mb-4">
+                                                <h5>Featured Item</h5>
+                                                <p>Create astonishing web sites and pages.</p>
+                                            </div>
+                                            <a class="btn btn-outline-primary btn-xs btn-transition" href="#">Apply now
+                                                <i class="bi-chevron-right small ms-1"></i></a>
+                                        </div>
+                                        <!-- End Col -->
+                                    </div>
+                                    <!-- End Row -->
+                                </div>
+                            </div>
+                            <!-- End Card -->
+                        </div>
+                        <!-- End Col -->
+                    </div>
+                    <!-- End Row -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offcanvas Search -->
+
+<!-- ========== END SECONDARY CONTENTS ========== -->
+<div id="liveToast" class="position-fixed toast hide" role="alert" aria-live="assertive" aria-atomic="true"
+     style="top: 20px; right: 20px; z-index: 1000;">
+    <div class="toast-body">
+        یک مورد را انتخاب کنید
+    </div>
+    <div style="margin: auto">
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+<script src="{% static 'jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'main\assets\vendor\aos\dist\aos.js' %}"></script>
+<script>
+    $('.nav > li > a').hover(function () {
+        var tt = $(this).attr('href');
+        $('.tab-pane').removeClass("active show");
+        $(tt).addClass("active show");
+    });
+    $('#nav-result1').innerHTML();
+</script>
+<!-- JS Implementing Plugins -->
+<script src="{% static 'main\assets\js\vendor.min.js' %}"></script>
+
+<!-- JS Front -->
+<script src="{% static 'main\assets\js\theme.min.js' %}"></script>
+<script src="./node_modules/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script src="../assets/js/hs.tom-select.js"></script>
+<script>
+    $('.fa-price').map(function () {
+        $(this).html((new Intl.NumberFormat("fa").format($(this).attr('data'))) + " تومان ");
+    });
+</script>
+<script>
+    $('.btn-close').click(function () {
+        $('#liveToast').hide();
+    });
+
+    {% if user.is_authenticated %}
+        $('.btntransition').click(function () {
+            if ($('.js-result').attr('data') == undefined) {
+                $('.toast-body').html('یک مورد را انتخاب کنید');
+                $('#liveToast').css("display", "inline-flex");
+                $('#liveToast').addClass('alert-soft-info');
+                $('#liveToast').show();
+            } else {
+                axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+                axios.defaults.xsrfCookieName = "csrftoken";
+                axios({
+                    method: "POST",
+                    url: "{% url 'add_to_cart' %}",
+                    xsrfCookieName: 'csrftoken',
+                    xsrfHeaderName: 'X-CSRFTOKEN',
+                    data: {product_id: $('.js-result').attr('data'), count: $('.js-result').val()},
+                    headers: {
+                        'X-CSRFTOKEN': 'csrftoken'
+                    }
+                }).then((response) => {
+                    if (response.data.status == "ok") {
+                        $('.toast-body').html('محصول با موفقیت به سبد خرید افزوده شد');
+                        $('#liveToast').css("display", "inline-flex");
+                        $('#liveToast').addClass('alert-soft-success');
+                        $('#liveToast').show();
+                    } else {
+                        $('.toast-body').html("متاسفانه محصول به سبد خرید افزوده نشد");
+                        $('#liveToast').css("display", "inline-flex");
+                        $('#liveToast').addClass('alert-soft-danger');
+                        $('#liveToast').show();
+                    }
+
+                });
+
+            }
+        });
+    {% else %}
+        $('.btntransition').click(function () {
+            $('.toast-body').html("برای ثبت سفارش ابتدا لاگین کنید");
+            $('#liveToast').css("display", "inline-flex");
+            $('#liveToast').addClass('alert-soft-danger');
+            $('#liveToast').show();
+        });
+    {% endif %}
+
+    $('.js-plus').click(function () {
+        if (parseInt($('.js-result').val()) < $('.js-result').attr('max')) {
+            $('.js-result').val(parseInt($('.js-result').val()) + 1);
+        }
+    })
+    $('.js-minus').click(function () {
+        if ($('.js-result').val() > $('.js-result').attr('min')) {
+            $('.js-result').val(parseInt($('.js-result').val()) - 1);
+        }
+    })
+    $(function () {
+        $('.form-check-input').change(function () {
+            if ($(this).attr('data-discount') > 1) {
+                $('.js-result').val($(this).attr('data-min'));
+                $('.js-result').attr('data', $(this).attr('value'));
+                $('.js-result').attr('min', $(this).attr('data-min'));
+                $('.js-result').attr('max', $(this).attr('data-max'));
+                $('#price-discount').html(new Intl.NumberFormat("fa").format($(this).attr('data')) + ' تومان ');
+                $('#price-main').html(new Intl.NumberFormat("fa").format($(this).attr('data-discount')) + ' تومان ');
+            } else {
+                $('.js-result').val($(this).attr('data-min'));
+                $('.js-result').attr('data', $(this).attr('value'));
+                $('.js-result').attr('min', $(this).attr('data-min'));
+                $('.js-result').attr('max', $(this).attr('data-max'));
+                $('#price-main').html(new Intl.NumberFormat("fa").format($(this).attr('data')) + ' تومان ');
+                $('#price-discount').html('');
+            }
+
+        });
+    });
+</script>
+<script>
+    var star = 1;
+    $("input[name=starts]").click(function () {
+        star = $(this).val();
+    })
+</script>
+<script>
+    $('.set-comment').click(function () {
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+        axios.defaults.xsrfCookieName = "csrftoken";
+        axios({
+            method: "POST",
+            url: "{% url 'product_comment' %}",
+            xsrfCookieName: 'csrftoken',
+            xsrfHeaderName: 'X-CSRFTOKEN',
+            data: {product_id: {{ product_select.id }}, stars: star, title: $('#id_title').val(), text: $('#id_text').val()},
+            headers: {
+                'X-CSRFTOKEN': 'csrftoken'
+            }
+        }).then((response) => {
+            if (response.data.text == "ok") {
+                $('.toast-body').html('نظر شما با موفقیت ثبت شد');
+                $('#liveToast').css("display", "inline-flex");
+                $('#liveToast').addClass('alert-soft-success');
+                $('#liveToast').show();
+            } else {
+                $('.toast-body').html("متاسفانه نظر شما ثبت نشد");
+                $('#liveToast').css("display", "inline-flex");
+                $('#liveToast').addClass('alert-soft-danger');
+                $('#liveToast').show();
+            }
+
+        });
+    });
+</script>
+<!-- JS Plugins Init. -->
+<script>
+    (function () {
+        // INITIALIZATION OF SWIPER
+        // =======================================================
+        var responsiveBreakpoint = new Swiper('.js-swiper-responsive-breakpoint', {
+            slidesPerView: 1,
+            spaceBetween: 10,
+            pagination: {
+                el: '.js-swiper-responsive-breakpoint-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                },
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 40,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 50,
+                },
+            }
+        });
+    })()
+</script>
+<!-- JS Plugins Init. -->
+<script>
+    (function () {
+        // INITIALIZATION OF MEGA MENU
+        // =======================================================
+        new HSMegaMenu('.js-mega-menu', {
+            desktop: {
+                position: 'left'
+            }
+        })
+        // INITIALIZATION OF SELECT
+        // =======================================================
+        HSCore.components.HSTomSelect.init('.js-select')
+
+        // INITIALIZATION OF SHOW ANIMATIONS
+        // =======================================================
+        new HSShowAnimation('.js-animation-link')
+
+
+        // INITIALIZATION OF BOOTSTRAP VALIDATION
+        // =======================================================
+        HSBsValidation.init('.js-validate', {
+            onSubmit: data => {
+                data.event.preventDefault()
+                alert('Submited')
+            }
+        })
+
+
+        // INITIALIZATION OF BOOTSTRAP DROPDOWN
+        // =======================================================
+        HSBsDropdown.init()
+
+
+        // INITIALIZATION OF GO TO
+        // =======================================================
+        new HSGoTo('.js-go-to')
+
+
+        // INITIALIZATION OF SWIPER
+        // =======================================================
+        var swiper = new Swiper('.js-swiper-shop-product', {
+            effect: 'fade',
+            autoplay: true,
+            loop: true,
+            navigation: {
+                nextEl: '.js-swiper-shop-product-button-next',
+                prevEl: '.js-swiper-shop-product-button-prev',
+            },
+            thumbs: {
+                swiper: sliderThumbs
+            }
+        });
+
+        var sliderThumbs = new Swiper('.js-swiper-shop-product-thumb', {
+            slidesPerView: 5,
+            watchSlidesVisibility: true,
+            watchSlidesProgress: true,
+            history: false,
+        });
+    })()
+</script>
+
+</body>
+</html>

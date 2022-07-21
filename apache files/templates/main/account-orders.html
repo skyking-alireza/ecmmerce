@@ -1,0 +1,420 @@
+﻿{% extends 'main/card-body.html' %}
+{% load tags %}
+{% load static %}
+{% load jalali_tags %}
+{% block customstyle %}
+    <script src="/static/moment.js"></script>
+    <style>
+        .button-changer{
+              border: none;
+              width: 30px;
+              height: 30px;
+              background: #377dff;
+              color: white;
+        }
+        .input-count{
+            width: 50px;
+            height: 30px;
+            border: none;
+            background: #377dff;
+            color: white;
+            text-align: center;
+        }
+        .input-count:focus{
+            outline: none;
+        }
+        .relative{
+            position: relative;
+        }
+        .middle{
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            opacity: 0;
+        }
+        .bi-trash{
+            font-size: 35px;
+        }
+        .image-hover{
+            transition: 0.5s;
+            cursor: pointer;
+        }
+        .relative:hover .middle {
+            transition: 0.5s;
+            opacity: 1;
+        }
+        .relative:hover .image-hover {
+            transition: 0.5s;
+            opacity: 0.3;
+        }
+        .icon-soft-danger{
+            cursor: pointer;
+        }
+    </style>
+
+{% endblock %}
+{% block main %}
+    <div class="col-lg-9">
+          <!-- Card -->
+          <div class="card">
+            <!-- Header -->
+            <div class="card-header border-bottom">
+              <form class="input-group input-group-merge">
+                <div class="input-group-prepend input-group-text">
+                  <i class="bi-search"></i>
+                </div>
+                <input type="search" class="form-control" placeholder="Search orders" aria-label="Search orders">
+              </form>
+            </div>
+            <!-- End Header -->
+
+            <!-- Body -->
+            <div class="card-body">
+              <!-- Nav Scroller -->
+              <div class="js-nav-scroller hs-nav-scroller-horizontal">
+                <span class="hs-nav-scroller-arrow-prev" style="display: none;">
+                  <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+                    <i class="bi-chevron-left"></i>
+                  </a>
+                </span>
+
+                <span class="hs-nav-scroller-arrow-next" style="display: none;">
+                  <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+                    <i class="bi-chevron-right"></i>
+                  </a>
+                </span>
+
+                <!-- Nav -->
+                <ul class="nav nav-segment nav-fill mb-7" id="featuresTab" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link active" href="#accountOrdersOne" id="accountOrdersOne-tab" data-bs-toggle="tab" data-bs-target="#accountOrdersOne" role="tab" aria-controls="accountOrdersOne" aria-selected="true">خرید های پیشین</a>
+                  </li>
+
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="#accountOrdersTwo" id="accountOrdersTwo-tab" data-bs-toggle="tab" data-bs-target="#accountOrdersTwo" role="tab" aria-controls="accountOrdersTwo" aria-selected="false">سبد خرید</a>
+                  </li>
+
+                  <li class="nav-item" role="presentation">
+                    <a class="nav-link" href="#accountOrdersThree" id="accountOrdersThree-tab" data-bs-toggle="tab" data-bs-target="#accountOrdersThree" role="tab" aria-controls="accountOrdersThree" aria-selected="false">خرید های حذف شده</a>
+                  </li>
+                </ul>
+                <!-- End Nav -->
+              </div>
+              <!-- End Nav Scroller -->
+
+              <!-- Tab Content -->
+              <div class="tab-content" id="accountOrdersTabContent">
+                <div class="tab-pane fade active show" id="accountOrdersOne" role="tabpanel" aria-labelledby="accountOrdersOne-tab">
+
+                  <ul class="list-unstyled mb-5">
+                      {% if payments %}
+                          {% for payment in payments %}
+                              <li class="card card-bordered shadow-none mb-3">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-6 col-md mb-3 mb-md-0">
+                            <small class="card-subtitle mb-0">جمع قیمت</small>
+                            <small class="text-dark fw-semi-bold fa-price" data="{{payment.amount}}"></small>
+                          </div>
+                          <!-- End Col -->
+                          <div class="col-6 col-md mb-3 mb-md-0">
+                            <small class="card-subtitle mb-0">وضعیت</small>
+                            <small class="text-dark fw-semi-bold">{{payment.returnstatus}}</small>
+                          </div>
+                          <!-- End Col -->
+                          <div class="col-6 col-md">
+                            <small class="card-subtitle mb-0">کد تراکنش بانکی</small>
+                            <small class="text-dark fw-semi-bold">{{payment.bank_track_id}}</small>
+                          </div>
+                          <!-- End Col -->
+                          <div class="col-6 col-md">
+                            <small class="card-subtitle mb-0">تاریخ خرید</small>
+                            <small class="text-dark fw-semi-bold fa-date" data="{{ payment.date  }}"></small>
+                          </div>
+                          <!-- End Col -->
+                        </div>
+                        <!-- End Row -->
+                          <hr>
+                              {% for foo in order %}
+                        <div class="row">
+                          <div class="col-md-8">
+                            <div class="row gx-2">
+                              <div class="col">
+                                  <div class="col-4 relative">
+                                    <img class="img-fluid image-hover" src="{{foo.pro.image.image.url}}" alt="{{foo.pro.image.alt}}">
+                                    <a href="{{ foo.pro.get_absolute_url }}" style="font-size: 12px">{{ foo.pro.name|truncatechars:35 }}</a>
+                                    <p class="fa-price" data="{{ foo.pro.get_price.price}}"></p>
+                                  </div>
+                              </div>
+                            </div>
+                            <!-- End Row -->
+                          </div>
+                        </div>
+                                  {% endfor %}
+                                         </div>
+                    </li>
+                          {% endfor %}
+                      {% endif %}
+                  </ul>
+
+                </div>
+
+                <div class="tab-pane fade" id="accountOrdersTwo" role="tabpanel" aria-labelledby="accountOrdersTwo-tab">
+                    {% if carts %}
+                            <ul class="list-unstyled mb-5">
+
+                    <!-- Card -->
+                    <li class="card card-bordered shadow-none mb-3">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-6 col-md mb-3 mb-md-0">
+                            <small class="card-subtitle mb-0">جمع قیمت</small>
+                            <small class="text-dark fw-semi-bold fa-price" data="{{ price }}"></small>
+                          </div>
+                          <!-- End Col -->
+
+                          <div class="col-6 col-md mb-3 mb-md-0">
+                            <small class="card-subtitle mb-0">تعداد محصولات</small>
+                            <small class="text-dark fw-semi-bold">{{ pl|length }}</small>
+                          </div>
+                          <!-- End Col -->
+
+                        </div>
+                        <!-- End Row -->
+
+                        <hr>
+
+                        <div class="row">
+                          <div class="col-md-8">
+
+                            <div class="row gx-2">
+                                {% for p in pl %}
+                                  <div class="col-4 relative remove-i{{ p.idcart }}">
+                                    <img class="img-fluid image-hover" src="{{ p.image }}" alt="Image Description">
+                                    <div class="middle">
+                                        <span class="icon icon-soft-danger mb-1" data="{{ p.idcart }}">
+                                          <i class="bi-trash"></i>
+                                        </span>
+                                    </div>
+                                    <a href="{{ p.url }}" style="font-size: 12px">{{ p.name|truncatechars:35 }}</a>
+                                    <p class="fa-price" data="{{ p.price}}"></p>
+                                    <div style="display: flex"><button style="border-radius: 0 13px 13px 0" class="button-changer btn-add" data="{{ p.idcart }}">+</button><input class="input-count input-{{ p.idcart }}" value="{{ p.count }}" disabled><button style="border-radius: 13px 0 0 13px" class="button-changer btn-low" data="{{ p.idcart }}">-</button></div>
+                                  </div>
+                                {% endfor %}
+                            </div>
+                            <!-- End Row -->
+                          </div>
+
+                          <div class="col-md-4">
+                            <div class="d-grid gap-2">
+                            <form method="post" action="{% url 'payment_start' %}">
+                                {% if addresses %}
+                                <!-- Select -->
+                                <div class="tom-select-custom">
+                                  <select name="address" class="js-select form-select" autocomplete="off"
+                                        data-hs-tom-select-options='{
+                                          "placeholder": "یک ادرس را انتخاب کنید",
+                                          "hideSearch": true
+                                        }' required>
+                                      {% for address in addresses %}
+                                    <option value="{{ address.id }}">{{ address }}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+                                <!-- End Select -->
+                                    {% else %}
+                                    <h4 class="card-title mb-0">قبل از خرید ادرس خود را ثبت کنید</h4>
+                                {% endif %}
+                                <br>
+                              <button style="width: 100%" type="submit" class="btn btn-primary btn-sm" {% if addresses %}  {% else %} disabled {% endif %}  >خرید</button>
+                            </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End List Item -->
+                    </li>
+                    <!-- End End Card -->
+
+                  </ul>
+                        {% else %}
+                  <!-- Empty State -->
+                  <div class="text-center content-space-1">
+                    <img class="avatar avatar-xl mb-3" src="http://127.0.0.1/static/main/assets/svg/illustrations/empty-state-no-data.svg" alt="Image Description">
+                    <p class="card-text">سبد خرید شما خالیست</p>
+                    <a class="btn btn-white btn-sm" href="{% url 'index' %}">شروع خرید</a>
+                  </div>
+                  <!-- End Empty State -->
+                    {% endif %}
+                </div>
+
+                <div class="tab-pane fade" id="accountOrdersThree" role="tabpanel" aria-labelledby="accountOrdersThree-tab">
+                  <!-- Empty State -->
+                  {% if other_payments %}
+                          {% for payment in other_payments %}
+                              <li class="card card-bordered shadow-none mb-3">
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-6 col-md mb-3 mb-md-0">
+                            <small class="card-subtitle mb-0">جمع قیمت</small>
+                            <small class="text-dark fw-semi-bold fa-price" data="{{payment.amount}}"></small>
+                          </div>
+                          <!-- End Col -->
+                          <div class="col-6 col-md mb-3 mb-md-0">
+                            <small class="card-subtitle mb-0">وضعیت</small>
+                            <small class="text-dark fw-semi-bold">{{payment.returnstatus}}</small>
+                          </div>
+                          <!-- End Col -->
+                          <div class="col-6 col-md">
+                            <small class="card-subtitle mb-0">کد تراکنش بانکی</small>
+                            <small class="text-dark fw-semi-bold">{{payment.bank_track_id}}</small>
+                          </div>
+                          <!-- End Col -->
+                          <div class="col-6 col-md">
+                            <small class="card-subtitle mb-0">تاریخ خرید</small>
+                            <small class="text-dark fw-semi-bold fa-date" data="{{ payment.date  }}"></small>
+                          </div>
+                          <!-- End Col -->
+                        </div>
+                        <!-- End Row -->
+                          <hr>
+                              {% for foo in order %}
+                        <div class="row">
+                          <div class="col-md-8">
+                            <div class="row gx-2">
+                              <div class="col">
+                                  <div class="col-4 relative">
+                                    <img class="img-fluid image-hover" src="{{foo.pro.image.image.url}}" alt="{{foo.pro.image.alt}}">
+                                    <a href="{{ foo.pro.get_absolute_url }}" style="font-size: 12px">{{ foo.pro.name|truncatechars:35 }}</a>
+                                    <p class="fa-price" data="{{ foo.pro.get_price.price}}"></p>
+                                  </div>
+                              </div>
+                            </div>
+                            <!-- End Row -->
+                          </div>
+                        </div>
+                                  {% endfor %}
+                                         </div>
+                    </li>
+                          {% endfor %}
+                      {% endif %}
+                  <!-- End Empty State -->
+                </div>
+              </div>
+              <!-- End Tab Content -->
+            </div>
+            <!-- End Body -->
+          </div>
+          <!-- End Card -->
+        </div>
+<div id="liveToast" class="position-fixed toast hide" role="alert" aria-live="assertive" aria-atomic="true" style="top: 20px; right: 20px; z-index: 1000;">
+  <div class="toast-body">
+    یک مورد را انتخاب کنید
+  </div>
+    <div style="margin: auto">
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+</div>
+{% endblock %}
+{% block customjs %}
+          <script src="{% static 'axios.min.js' %}"></script>
+          <script>
+                $( document ).ready(function() {
+                    $('.fa-price').map(function () {
+                        $(this).html((new Intl.NumberFormat("fa").format($(this).attr('data')))+ " تومان ");
+                    });
+                });
+                $( document ).ready(function() {
+                    $('.fa-date').map(function () {
+                        $(this).html(new Intl.DateTimeFormat('fa-IR', {dateStyle: 'full', timeStyle: 'short'}).format(moment.unix($(this).attr('data'))));
+                    });
+                });
+                $('.btn-add').click(function () {
+                    axios.defaults.xsrfHeaderName = 'X_CSRFTOKEN';
+                    axios.defaults.xsrfCookieName = 'csrftoken';
+                    axios({
+                        method : "POST",
+                        url : "{% url 'add_to_cart' %}",
+                        xsrfCookieName : "csrftoken",
+                        xsrfHeaderName : "X-CSRFTOKEN",
+                        data : {product_id :$(this).attr('data')   ,count :1},
+                        headers : {
+                          'X-CSRFTOKEN' : 'csrftoken'
+                        },
+                    }).then((response) => {
+                        if (response.data.status == "ok"){
+                            $('.toast-body').html('محصول با موفقیت به سبد خرید افزوده شد');
+                            $('#liveToast').css("display", "inline-flex");
+                            $('#liveToast').addClass('alert-soft-success');
+                            $('#liveToast').show();
+                            $('.input-'+$(this).attr('data')).val( parseInt($('.input-'+$(this).attr('data')).val()) + 1);
+                        }else {
+                            $('.toast-body').html("متاسفانه محصول به سبد خرید افزوده نشد");
+                            $('#liveToast').css("display", "inline-flex");
+                            $('#liveToast').addClass('alert-soft-danger');
+                            $('#liveToast').show();
+                        };
+                    });
+                });
+                $('.icon-soft-danger').click(function () {
+                    axios.defaults.xsrfHeaderName = 'X_CSRFTOKEN';
+                    axios.defaults.xsrfCookieName = 'csrftoken';
+                    axios({
+                        method : "POST",
+                        url : "{% url 'remove_to_cart' %}",
+                        xsrfCookieName : "csrftoken",
+                        xsrfHeaderName : "X-CSRFTOKEN",
+                        data : {product_id :$(this).attr('data') },
+                        headers : {
+                          'X-CSRFTOKEN' : 'csrftoken'
+                        },
+                    }).then((response) => {
+                        if (response.data.status == "ok"){
+                            $('.toast-body').html('محصول با موفقیت حذف شد');
+                            $('#liveToast').css("display", "inline-flex");
+                            $('#liveToast').addClass('alert-soft-success');
+                            $('#liveToast').show();
+                            $('.remove-i'+$(this).attr('data')).remove();
+                        }else {
+                            $('.toast-body').html("متاسفانه محصول حذف نشد");
+                            $('#liveToast').css("display", "inline-flex");
+                            $('#liveToast').addClass('alert-soft-danger');
+                            $('#liveToast').show();
+                        };
+                    });
+                });
+                $('.btn-low').click(function () {
+                    if ( parseInt($('.input-'+$(this).attr('data')).val()) >1){
+                        axios.defaults.xsrfHeaderName = 'X_CSRFTOKEN';
+                        axios.defaults.xsrfCookieName = 'csrftoken';
+                        axios({
+                            method : "POST",
+                            url : "{% url 'low_to_cart' %}",
+                            xsrfCookieName : "csrftoken",
+                            xsrfHeaderName : "X-CSRFTOKEN",
+                            data : {product_id :$(this).attr('data') },
+                            headers : {
+                              'X-CSRFTOKEN' : 'csrftoken'
+                            },
+                        }).then((response) => {
+                            if (response.data.status == "ok"){
+                                $('.toast-body').html('محصول با موفقیت به سبد خرید کم شد');
+                                $('#liveToast').css("display", "inline-flex");
+                                $('#liveToast').removeClass('alert-soft-danger');
+                                $('#liveToast').addClass('alert-soft-success');
+                                $('#liveToast').show();
+                                $('.input-'+$(this).attr('data')).val( parseInt($('.input-'+$(this).attr('data')).val()) - 1);
+                            }else {
+                                $('.toast-body').html("متاسفانه محصول از سبد خرید کم نشد");
+                                $('#liveToast').css("display", "inline-flex");
+                                $('#liveToast').removeClass('alert-soft-success');
+                                $('#liveToast').addClass('alert-soft-danger');
+                                $('#liveToast').show();
+                            };
+                        });
+                    };
+                });
+          </script>
+{% endblock %}
+
